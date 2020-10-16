@@ -16,7 +16,7 @@ function setup(){
  	method.c_height = canvas.height;
 	method.c_width = canvas.width;
 
-	if(method.data.length == 0) method.setRandomData();	
+	method.setRandomData();	
 	method.updatePara();
 
 	method.c.fillStyle = "#ffffff";

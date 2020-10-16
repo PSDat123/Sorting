@@ -9,9 +9,8 @@ class Method{
 	}
 
 	updatePara(){
-		this.num = this.data.length;
 		this.col_w = this.c_width / this.num;
-		for(let i = 0; i < this.num ; i++){
+		for(let i = 0; i < this.data.length ; i++){
 			this.data[i][0] = i * this.col_w;
 		}
 	}
@@ -22,9 +21,9 @@ class Method{
 		}
 	}
 	setRandomData(){
-		this.data = [];
 		this.col_w = this.c_width / this.num;
-		for(let i = 0; i < this.num; i++){
+		let cur_l = this.data.length;
+		for(let i = 0; i < this.num - cur_l; i++){
 			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random()*this.c_height)]);
 		}
 	}
@@ -34,7 +33,6 @@ class Method{
 		this.c.clearRect(0, 0, this.c_width, this.c_height);
 		this.c.fillStyle = "#ffffff";
 		let count = 0;
-		// console.log("1");
 		for(let i = 0; i < this.num ; i++){
 			if(i + 1 < this.num && this.data[i][1] > this.data[i+1][1]){
 				let temp = this.data[i+1][1];
