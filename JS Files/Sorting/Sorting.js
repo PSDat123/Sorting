@@ -25,7 +25,12 @@ function setup(){
 setup();
 
 function start_sort(){
-	start_btn.removeEventListener("click", start_sort);
-	method.BBsort();
-	start_btn.addEventListener("click", start_sort);
+	if(!method.status){
+		start_btn.removeEventListener("click", start_sort);
+		method.Isort();
+		start_btn.addEventListener("click", start_sort);
+	}
+	// start_btn.removeEventListener("click", start_sort);
+	// method.Isort();
+	// start_btn.addEventListener("click", start_sort);
 }

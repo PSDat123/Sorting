@@ -20,9 +20,11 @@ canvas{
 .nav-bar{
 	display: block;
 	box-shadow: 0 5px 5px white;
+	overflow: auto;
+
 }
 .nav-items{
-	display: inline-block;
+	display: block;
 	padding: 1em;
 	overflow: auto;
 
@@ -30,4 +32,14 @@ canvas{
 	font-size: 20px;
 	font-weight: bold;
 	letter-spacing: 1px;
+	float: left;
+}
+.start{
+	background: none;
+	border: 1px solid black;
+
+	padding: 10px 20px;
+	margin: 1em;
+	display: block;
+	float: left;
 }
