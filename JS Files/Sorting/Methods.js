@@ -31,67 +31,84 @@ class Method{
 	}
 	//Bubble sort
 	BBsort(){
-		this.status = 1;
-		let req = requestAnimationFrame(this.BBsort.bind(this));
-		this.c.clearRect(0, 0, this.c_width, this.c_height);
+		let i = 0;
+		let max = this.num;
 		this.c.fillStyle = "#ffffff";
 		let count = 0;
-		for(let i = 0; i < this.num ; i++){
+		this.status = 1;
+		//Start Timer
+		const start = new Date().getTime();
+		console.log(`Start: ${start}`);
+
+		let main = () => {
+			let req = requestAnimationFrame(main);
+			this.showData();
+ 			this.c.fillStyle = "#ff0000";
+			this.c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
+			this.c.fillStyle = "#ffffff";
 			if(i + 1 < this.num && this.data[i][1] > this.data[i+1][1]){
 				[this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
-
-				this.c.fillStyle = "#ff0000";
-				this.c.fillRect(this.data[i+1][0], this.c_height - this.data[i+1][1], this.col_w, this.data[i+1][1]);
-				// this.c.fillRect(this.data[i+1][0], this.c_height - this.data[i+1][1], this.col_w, this.data[i+1][1]);
-				this.c.fillStyle = "#ffffff";
+				count = 0;
 			}
 			else{
 				count++;
-				this.c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
+			}	
+			if (count >= max){
+				this.c.fillStyle = "#00ff00";
+				this.showData();
+				cancelAnimationFrame(req);	
+				this.status = 0;	
+				//End Timer
+				const end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
 			}
-			
+			i++;
+			if(i >= max){
+				// console.log(`Count: ${count} | Max = ${max}`);
+				max-= count;
+				count = 0;
+				i = 0;
+			}
 		}
-		if (count >= this.num){
-			this.c.fillStyle = "#00ff00";
-			this.showData();
-			cancelAnimationFrame(req);	
-			this.status = 0;	
-		}
+		main();
 	}
 	//Insertion sort
 	Isort(){
-		let cur_index = 1;
-		let recur = (d_index = 1) => {
-			if(d_index < 1 || d_index > this.num-1 || this.data[d_index][1] > this.data[d_index-1][1]){
-				return true;				
-			}	
-			[this.data[d_index - 1][1], this.data[d_index][1]] = [this.data[d_index][1], this.data[d_index - 1][1]];
-			
-			recur(d_index - 1);
-		}
-		let main = () => {
-			this.status = 1;
-			let req = requestAnimationFrame(main);
-			// this.c.clearRect(0, 0, this.c_width, this.c_height);
-			this.c.fillStyle = "#ffffff";
-			
-			// console.log(cur_index);
-			// recur(cur_index);
-			//this.showData();
-			recur(cur_index);
-			this.showData();
-			
-			this.c.fillStyle = "#ff0000";
-			this.c.fillRect(this.data[cur_index][0], this.c_height - this.data[cur_index][1], this.col_w, this.data[cur_index][1]);
-			this.c.fillStyle = "#ffffff";
+		let max = 1;
+		let i = max + 1;
+		let count = 0;
+		this.c.fillStyle = "#ffffff";
+		this.status = 1;
+		//Start Timer
+		const start = new Date().getTime();
+		console.log(`Start: ${start}`);
 
-			
-			cur_index++;
-			if(cur_index > this.num-1) {
+		let main = () => {
+			let req = requestAnimationFrame(main);
+			i--;
+			this.showData();
+			this.c.fillStyle = "#ff0000";
+			this.c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
+			this.c.fillStyle = "#ffffff"
+			if(i - 1 >= 0 && this.data[i][1] < this.data[i-1][1]){
+				[this.data[i][1], this.data[i-1][1]] = [this.data[i-1][1], this.data[i][1]];
+			}
+			else{
+				// console.log(`Count: ${count} | Max = ${max}`);
+				max++;
+				i=max + 1;
+				count = 0;
+			}
+			if(max >= this.num) {
 				this.c.fillStyle = "#00ff00";
 				this.showData();
 				cancelAnimationFrame(req);	
 				this.status = 0;
+				//End Timer
+				let end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
 			}
 		}
 		main();
