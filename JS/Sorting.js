@@ -1,3 +1,5 @@
+// import Method from "/Methods.js";
+
 let canvas = document.querySelector("canvas");
 let nav_bar = document.querySelector(".nav-bar");
 let start_btn = document.querySelector(".start");
@@ -34,3 +36,4 @@ function start_sort(){
 	// method.Isort();
 	// start_btn.addEventListener("click", start_sort);
 }
+
