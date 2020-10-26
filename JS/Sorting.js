@@ -1,16 +1,28 @@
 // import Method from "/Methods.js";
 
-let canvas = document.querySelector("canvas");
+
 let nav_bar = document.querySelector(".nav-bar");
 let start_btn = document.querySelector(".start");
+let current_opt = document.querySelector(".selection");
 
 let num = 100;
 let data = [];
 
-let method = new Method(canvas.getContext("2d"),num,data,canvas);
+let method = new Method(num,data,canvas);
 
+// method.description = Object.getOwnPropertyNames(Method.prototype);
+// method.description.shift();
+// console.log(method.description);
+for(let i of method.description){
+	let tag = document.createElement("OPTION");
+	let text = document.createTextNode(i);
+	tag.appendChild(text)
+	tag.value = i.match(/\b([^S])/g).join("").trim() + "sort";
+	current_opt.appendChild(tag);
+}
 start_btn.addEventListener("click", start_sort);
 window.addEventListener("resize", setup);
+current_opt.addEventListener("change", change_method)
 
 function setup(){
 	canvas.width = window.innerWidth;
@@ -21,16 +33,23 @@ function setup(){
 	method.setRandomData();	
 	method.updatePara();
 
-	method.c.fillStyle = "#ffffff";
+	c.fillStyle = "#ffffff";
 	method.showData();
 }
 setup();
 
+let fn = '';
+function change_method() {
+	method.status = 0;
+	fn = "method." + current_opt.value.toLowerCase() + "()";
+	// console.log(fn);
+}
+change_method();
+
 function start_sort(){
 	if(!method.status){
-		start_btn.removeEventListener("click", start_sort);
-		method.Isort();
-		start_btn.addEventListener("click", start_sort);
+		cancelAnimationFrame(method.req);
+		eval(fn);
 	}
 	// start_btn.removeEventListener("click", start_sort);
 	// method.Isort();
