@@ -1,8 +1,9 @@
+'use strict';
 let canvas = document.querySelector("canvas");
 let c = canvas.getContext("2d");
+
 class Method{
 	constructor(num, data, canvas){
-
 		this.data = data;
 		this.c_height = canvas.height;
 		this.c_width = canvas.width;
@@ -10,11 +11,11 @@ class Method{
 		this.col_w = this.c_width / this.num;
 		this.status = 0;
 		this.req = 0;
-		this.description = ["Bubble Sort", "Insertion Sort", "Merge Sort"];
+		this.description = ["Bubble Sort", "Insertion Sort", "Merge Sort"].sort();
 	}
 	updatePara = function(){
-		this.col_w = this.c_width / this.num;
 		for (let i = 0; i < this.data.length; i++) {
+			this.col_w = this.c_width / this.num;
 			this.data[i][0] = i * this.col_w;
 		}
 	}
@@ -24,10 +25,18 @@ class Method{
 			c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
 		}
 	}
+	redLine = function(data_pair) {
+		c.fillStyle = "#ff0000";
+		c.fillRect(data_pair[0], this.c_height - data_pair[1], this.col_w, data_pair[1]);
+		c.fillStyle = "#ffffff";
+	}
 	setRandomData = function(){
 		this.col_w = this.c_width / this.num;
 		let cur_l = this.data.length;
-		for (let i = 0; i < this.num - cur_l; i++) {
+		if (this.num < cur_l){
+			this.data = [];
+		}
+		for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
 			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random() * this.c_height)]);
 		}
 	}
@@ -46,9 +55,7 @@ Method.prototype.bsort = function(){
 	let main = () => {
 		this.req = requestAnimationFrame(main);
 		this.showData();
-		c.fillStyle = "#ff0000";
-		c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
-		c.fillStyle = "#ffffff";
+		this.redLine(this.data[i]);
 		if(i + 1 < this.num && this.data[i][1] > this.data[i+1][1]){
 			[this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
 			count = 0;
@@ -68,7 +75,6 @@ Method.prototype.bsort = function(){
 		}
 		i++;
 		if(i >= max){
-			// console.log(`Count: ${count} | Max = ${max}`);
 			max-= count;
 			count = 0;
 			i = 0;
@@ -91,14 +97,11 @@ Method.prototype.isort = function(){
 		this.req = requestAnimationFrame(main);
 		i--;
 		this.showData();
-		c.fillStyle = "#ff0000";
-		c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
-		c.fillStyle = "#ffffff"
+		this.redLine(this.data[i]);
 		if(i - 1 >= 0 && this.data[i][1] < this.data[i-1][1]){
 			[this.data[i][1], this.data[i-1][1]] = [this.data[i-1][1], this.data[i][1]];
 		}
 		else{
-			// console.log(`Count: ${count} | Max = ${max}`);
 			max++;
 			i=max + 1;
 			count = 0;
@@ -127,21 +130,20 @@ Method.prototype.msort = function (){
 	let queue = [];
 	(function merge_index(l,r){
 		if(l<r){
-			let m = Math.floor(l + (r - l) / 2);
+			var m = Math.floor(l + (r - l) / 2);
 			merge_index(l,m);
 			merge_index(m+1, r);
 			queue.push([l,m,r]);
 		}
 	})(0, this.data.length - 1);
-	// merge_index(0, this.data.length - 1);
-	console.log(queue);
+	// console.log(queue);
 	let q_i = 0
 	let l = queue[q_i][0];
 	let m = queue[q_i][1];
 	let r = queue[q_i][2];
 	let a1 = this.data.slice(l, m + 1);
 	let a2 = this.data.slice(m + 1, r + 1);
-	let l1 = 0, l2 = 0;
+	let l1 = 0, l2 = 0, con = 0;
 	let main = () =>{
 		this.req = requestAnimationFrame(main);
 		if (l + l1 > m && m + 1 + l2 > r) {
@@ -167,48 +169,26 @@ Method.prototype.msort = function (){
 				l2 = 0;
 			}
 		}
-		else if (l + l1 > m){
-			this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], a2[l2][1]];
+		else if ((con = l + l1 > m) || m + 1 + l2 > r){
+			this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], con ? a2[l2][1] : a1[l1][1]];
 			this.showData();
-			//Red line
-			c.fillStyle = "#ff0000";
-			c.fillRect(this.data[l + l1 + l2][0], this.c_height - this.data[l + l1 + l2][1], this.col_w, this.data[l + l1 + l2][1]);
+			c.fillStyle = "#00ffff";//cyan
+			c.fillRect(this.data[m + 1][0], this.c_height - this.data[m + 1][1], this.col_w, this.data[m + 1][1]);
 			c.fillStyle = "#ffffff";
-
-			l2++;
-		}
-		else if (m + 1 + l2 > r) {
-			this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], a1[l1][1]];
-			this.showData();
 			//Red line
-			c.fillStyle = "#ff0000";
-			c.fillRect(this.data[l + l1 + l2][0], this.c_height - this.data[l + l1 + l2][1], this.col_w, this.data[l + l1 + l2][1]);
-			c.fillStyle = "#ffffff";
-
-			l1++;
+			this.redLine(this.data[l + l1 + l2]);
+			con? l2++ : l1++;
 		}
 		else{
-			// console.log(a1, a2);
-			if(a1[l1][1] > a2[l2][1]){
-				this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], a2[l2][1]];
-				this.showData();
-				//Red line
-				c.fillStyle = "#ff0000";
-				c.fillRect(this.data[l + l1 + l2][0], this.c_height - this.data[l + l1 + l2][1], this.col_w, this.data[l + l1 + l2][1]);
-				c.fillStyle = "#ffffff";
-
-				l2++;
-			}
-			else{
-				this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], a1[l1][1]];
-				this.showData();
-				//Red line
-				c.fillStyle = "#ff0000";
-				c.fillRect(this.data[l + l1 + l2][0], this.c_height - this.data[l + l1 + l2][1], this.col_w, this.data[l + l1 + l2][1]);
-				c.fillStyle = "#ffffff";
-
-				l1++;
-			}
+			con = a1[l1][1] > a2[l2][1];
+			this.data[l + l1 + l2] = [this.data[l + l1 + l2][0], con ? a2[l2][1] : a1[l1][1]];
+			this.showData();
+			c.fillStyle = "#00ffff";//cyan
+			c.fillRect(this.data[m + 1][0], this.c_height - this.data[m + 1][1], this.col_w, this.data[m + 1][1]);
+			c.fillStyle = "#ffffff";
+			//Red line
+			this.redLine(this.data[l + l1 + l2]);
+			con ? l2++ : l1++;
 		}
 	} 
 	main();

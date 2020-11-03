@@ -4,11 +4,12 @@
 let nav_bar = document.querySelector(".nav-bar");
 let start_btn = document.querySelector(".start");
 let current_opt = document.querySelector(".selection");
+let num_ip = document.querySelector(".ip");
 
-let num = 100;
+// let num = parseInt(num_ip.value);
 let data = [];
 
-let method = new Method(num,data,canvas);
+let method = new Method(parseInt(num_ip.value),data,canvas);
 
 // method.description = Object.getOwnPropertyNames(Method.prototype);
 // method.description.shift();
@@ -23,6 +24,7 @@ for(let i of method.description){
 start_btn.addEventListener("click", start_sort);
 window.addEventListener("resize", setup);
 current_opt.addEventListener("change", change_method)
+num_ip.addEventListener("change", () => { method.num = parseInt(num_ip.value); setup();})
 
 function setup(){
 	canvas.width = window.innerWidth;
@@ -30,6 +32,7 @@ function setup(){
  	method.c_height = canvas.height;
 	method.c_width = canvas.width;
 
+	
 	method.setRandomData();	
 	method.updatePara();
 
@@ -49,7 +52,7 @@ change_method();
 function start_sort(){
 	if(!method.status){
 		cancelAnimationFrame(method.req);
-		eval(fn);
+		Function(fn)();
 	}
 	// start_btn.removeEventListener("click", start_sort);
 	// method.Isort();

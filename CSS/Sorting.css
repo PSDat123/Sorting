@@ -43,7 +43,11 @@ canvas{
 	display: block;
 	float: left;
 }
-.selection{
+#form{
+	overflow: auto;
+	float: left;
+}
+.ip, .selection{
 	background: none;
 	display: block;
 
@@ -51,4 +55,15 @@ canvas{
 	padding: 10px 20px;
 	margin: 1em;
 	float: left;
+}
+.ip{
+	width:5em;
+}
+#ip-name{
+	font-size: 16px;
+	padding: 10px 20px;
+	float: left;
+	margin: 0.5em;
+	margin-right: 0px;
+	padding-right: 4px;
 }
