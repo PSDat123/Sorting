@@ -23,8 +23,13 @@ for(let i of method.description){
 }
 start_btn.addEventListener("click", start_sort);
 window.addEventListener("resize", setup);
-current_opt.addEventListener("change", change_method)
-num_ip.addEventListener("change", () => { method.num = parseInt(num_ip.value); setup();})
+current_opt.addEventListener("change", change_method);
+num_ip.addEventListener("change", () => { 
+	cancelAnimationFrame(method.req);
+	method.status = 0;
+	method.num = parseInt(num_ip.value); 
+	setup();
+});
 
 function setup(){
 	canvas.width = window.innerWidth;

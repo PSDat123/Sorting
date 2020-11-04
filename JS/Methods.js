@@ -34,7 +34,10 @@ class Method{
 		this.col_w = this.c_width / this.num;
 		let cur_l = this.data.length;
 		if (this.num < cur_l){
-			this.data = [];
+			for (let i = 0; i < - this.num + cur_l; i++) {
+				this.data.pop();
+			}
+			return;
 		}
 		for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
 			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random() * this.c_height)]);
