@@ -1,6 +1,5 @@
 // import Method from "/Methods.js";
 
-
 let nav_bar = document.querySelector(".nav-bar");
 let start_btn = document.querySelector(".start");
 let current_opt = document.querySelector(".selection");
@@ -18,9 +17,10 @@ for(let i of method.description){
 	let tag = document.createElement("OPTION");
 	let text = document.createTextNode(i);
 	tag.appendChild(text)
-	tag.value = i.match(/\b([^S])/g).join("").trim() + "sort";
+	tag.value = i.match(/^(?:\w){2}/g).join("").trim() + "sort";
 	current_opt.appendChild(tag);
 }
+
 start_btn.addEventListener("click", start_sort);
 window.addEventListener("resize", setup);
 current_opt.addEventListener("change", change_method);
@@ -36,7 +36,6 @@ function setup(){
  	canvas.height =	window.innerHeight - nav_bar.offsetHeight;
  	method.c_height = canvas.height;
 	method.c_width = canvas.width;
-
 	
 	method.setRandomData();	
 	method.updatePara();
@@ -49,13 +48,13 @@ setup();
 let fn = '';
 function change_method() {
 	method.status = 0;
-	fn = "method." + current_opt.value.toLowerCase() + "()";
+	fn = `method.${current_opt.value.toLowerCase()}?.()`;
 	// console.log(fn);
 }
 change_method();
 
 function start_sort(){
-	if(!method.status){
+	if(!method.status && method.num >= +num_ip.min){
 		cancelAnimationFrame(method.req);
 		Function(fn)();
 	}

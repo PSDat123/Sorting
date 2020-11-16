@@ -11,7 +11,7 @@ class Method{
 		this.col_w = this.c_width / this.num;
 		this.status = 0;
 		this.req = 0;
-		this.description = ["Bubble Sort", "Insertion Sort", "Merge Sort"].sort();
+		this.description = ["Bubble Sort", "Insertion Sort", "Merge Sort", "Shell Sort"].sort();
 	}
 	updatePara = function(){
 		for (let i = 0; i < this.data.length; i++) {
@@ -43,9 +43,15 @@ class Method{
 			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random() * this.c_height)]);
 		}
 	}
+	end_sort = function(){
+		cancelAnimationFrame(this.req);
+		c.fillStyle = "#00ff00";
+		this.showData();
+		this.status = 0;
+	}
 }
 //Bubble sort
-Method.prototype.bsort = function(){
+Method.prototype.busort = function(){
 	let i = 0;
 	let max = this.num;
 	c.fillStyle = "#ffffff";
@@ -67,10 +73,7 @@ Method.prototype.bsort = function(){
 			count++;
 		}	
 		if (count >= max){
-			c.fillStyle = "#00ff00";
-			this.showData();
-			cancelAnimationFrame(this.req);	
-			this.status = 0;	
+			this.end_sort();
 			//End Timer
 			const end = new Date().getTime();
 			console.log(`End: ${end}`);
@@ -86,7 +89,7 @@ Method.prototype.bsort = function(){
 	main();
 }
 //Insertion sort
-Method.prototype.isort = function(){
+Method.prototype.insort = function(){
 	let max = 1;
 	let i = max + 1;
 	let count = 0;
@@ -110,12 +113,9 @@ Method.prototype.isort = function(){
 			count = 0;
 		}
 		if(max >= this.num) {
-			c.fillStyle = "#00ff00";
-			this.showData();
-			cancelAnimationFrame(this.req);	
-			this.status = 0;
+			this.end_sort();
 			//End Timer
-			let end = new Date().getTime();
+			const end = new Date().getTime();
 			console.log(`End: ${end}`);
 			console.log(`Time taken: ${end - start}ms`); //Time taken
 		}
@@ -123,7 +123,7 @@ Method.prototype.isort = function(){
 	main();
 }
 //Merge Sort
-Method.prototype.msort = function (){
+Method.prototype.mesort = function (){
 	c.fillStyle = "#ffffff";
 	this.status = 1;
 	//Start Timer
@@ -152,13 +152,9 @@ Method.prototype.msort = function (){
 		if (l + l1 > m && m + 1 + l2 > r) {
 			q_i++;
 			if (q_i >= queue.length) {
-				c.fillStyle = "#00ff00";
-				this.showData();
-				cancelAnimationFrame(this.req);
-				this.status = 0;
-
+				this.end_sort();
 				//End Timer
-				let end = new Date().getTime();
+				const end = new Date().getTime();
 				console.log(`End: ${end}`);
 				console.log(`Time taken: ${end - start}ms`); //Time taken
 			}
@@ -196,9 +192,52 @@ Method.prototype.msort = function (){
 	} 
 	main();
 }
+//Shell sort
+Method.prototype.shsort = function(){
+	c.fillStyle = "#ffffff";
+	this.status = 1;
+	//Start Timer
+	const start = new Date().getTime();
+	console.log(`Start: ${start}`);
 
+	let gap = Math.floor(this.data.length / 2);
+	let i = gap, changes = 0;
+	let temp_index = gap;
+	let main = () =>{
+		this.req = requestAnimationFrame(main);
+		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0  && this.data[temp_index][1] < this.data[temp_index - gap][1]){
+			[this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
+			this.showData();
+			this.redLine(this.data[temp_index]);
+			temp_index -= gap;
+			this.redLine(this.data[temp_index]);
+			changes++;
+		}
+		else{
+			i++;
+			this.showData();
+			this.redLine(this.data[temp_index]);
+			temp_index = i;
+		}
+		
+		if (i >= this.data.length) {
+			gap = Math.floor(gap / 2);
+			i = gap;
+			temp_index = gap;
+			(() => changes ? true : (() => gap = 0)())();
+		}
+		if (gap <= 0) {
+			this.end_sort();
+			//End Timer
+			const end = new Date().getTime();
+			console.log(`End: ${end}`);
+			console.log(`Time taken: ${end - start}ms`); //Time taken
+		}
+
+	}
+	main();
+}
 //--Failed Stuffs--//
-
 
 // Method.prototype.msort1 = function(){
 // 	// this.status = 1;
