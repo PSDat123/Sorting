@@ -207,25 +207,22 @@ Method.prototype.shsort = function(){
 		this.req = requestAnimationFrame(main);
 		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0  && this.data[temp_index][1] < this.data[temp_index - gap][1]){
 			[this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
-			this.showData();
-			this.redLine(this.data[temp_index]);
 			temp_index -= gap;
-			this.redLine(this.data[temp_index]);
 			changes++;
 		}
 		else{
 			i++;
-			this.showData();
-			this.redLine(this.data[temp_index]);
 			temp_index = i;
 		}
-		
+		this.showData();
+		this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
 		if (i >= this.data.length) {
 			gap = Math.floor(gap / 2);
 			i = gap;
 			temp_index = gap;
 			(() => changes ? true : (() => gap = 0)())();
 		}
+		this.redLine(this.data[i]);
 		if (gap <= 0) {
 			this.end_sort();
 			//End Timer
