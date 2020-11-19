@@ -92,7 +92,7 @@ Method.prototype.busort = function(){
 Method.prototype.insort = function(){
 	let max = 1;
 	let i = max + 1;
-	let count = 0;
+	// let count = 0;
 	c.fillStyle = "#ffffff";
 	this.status = 1;
 	//Start Timer
@@ -110,7 +110,7 @@ Method.prototype.insort = function(){
 		else{
 			max++;
 			i=max + 1;
-			count = 0;
+			// count = 0;
 		}
 		if(max >= this.num) {
 			this.end_sort();
@@ -203,12 +203,15 @@ Method.prototype.shsort = function(){
 	let gap = Math.floor(this.data.length / 2);
 	let i = gap, changes = 0;
 	let temp_index = gap;
+	let con = 0;
 	let main = () =>{
 		this.req = requestAnimationFrame(main);
-		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0  && this.data[temp_index][1] < this.data[temp_index - gap][1]){
+		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0 && this.data[temp_index][1] < this.data[temp_index - gap][1]){
 			[this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
 			temp_index -= gap;
 			changes++;
+			if (con) gap =this.data.length / 4 ;
+			con = 0;
 		}
 		else{
 			i++;
@@ -217,10 +220,20 @@ Method.prototype.shsort = function(){
 		this.showData();
 		this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
 		if (i >= this.data.length) {
-			gap = Math.floor(gap / 2);
-			i = gap;
-			temp_index = gap;
-			(() => changes ? true : (() => gap = 0)())();
+			if (con) {gap = 0; i = gap;}
+			else (
+				() => changes ? (() => {
+					gap = Math.floor(gap / 2);
+					i = gap;
+					temp_index = gap;
+				})() : 
+				(() => {
+					gap = 1; 
+					con = 1;
+					i = gap;
+					temp_index = gap;
+				})()
+			)();
 		}
 		this.redLine(this.data[i]);
 		if (gap <= 0) {
@@ -230,7 +243,6 @@ Method.prototype.shsort = function(){
 			console.log(`End: ${end}`);
 			console.log(`Time taken: ${end - start}ms`); //Time taken
 		}
-
 	}
 	main();
 }
