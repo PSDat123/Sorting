@@ -17,7 +17,8 @@ for(let i of method.description){
 	let tag = document.createElement("OPTION");
 	let text = document.createTextNode(i);
 	tag.appendChild(text)
-	tag.value = i.match(/^(?:\w){2}/g).join("").trim() + "sort";
+	// tag.value = i.match(/^(?:\w){2}/g).join("").trim() + "sort";
+	tag.value = i.toLowerCase();
 	current_opt.appendChild(tag);
 }
 
@@ -48,7 +49,7 @@ setup();
 let fn = '';
 function change_method() {
 	method.status = 0;
-	fn = `method.${current_opt.value.toLowerCase()}?.()`;
+	fn = `method["${current_opt.value.toLowerCase()}"]?.()`;
 	// console.log(fn);
 }
 change_method();

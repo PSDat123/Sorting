@@ -11,7 +11,9 @@ class Method{
 		this.col_w = this.c_width / this.num;
 		this.status = 0;
 		this.req = 0;
-		this.description = ["Bubble Sort", "Insertion Sort", "Merge Sort", "Shell Sort"].sort();
+		this.description = Object.keys(Method.prototype)
+							.map(s => s.split(" ")
+								.map(s1 => s1[0].toUpperCase() + s1.substr(1)).join(" ")).sort();
 	}
 	updatePara = function(){
 		for (let i = 0; i < this.data.length; i++) {
@@ -22,12 +24,13 @@ class Method{
 	showData = function(){
 		c.clearRect(0, 0, this.c_width, this.c_height);
 		for (let i = 0; i < this.num; i++) {
-			c.fillRect(this.data[i][0], this.c_height - this.data[i][1], this.col_w, this.data[i][1]);
+			// c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.col_w + this.col_w / (this.c_width / this.num));
+			c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.data[i][1]);
 		}
 	}
 	redLine = function(data_pair) {
 		c.fillStyle = "#ff0000";
-		c.fillRect(data_pair[0], this.c_height - data_pair[1], this.col_w, data_pair[1]);
+		c.fillRect(data_pair[0] - this.col_w / (this.c_width / this.num), this.c_height - data_pair[1], this.col_w + this.col_w / (this.c_width / this.num), data_pair[1]);
 		c.fillStyle = "#ffffff";
 	}
 	setRandomData = function(){
@@ -41,6 +44,8 @@ class Method{
 		}
 		for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
 			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random() * this.c_height)]);
+			//cos//this.data.push([i * this.col_w, (this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 )]);
+			//sin//this.data.push([i * this.col_w, (this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2)]);
 		}
 	}
 	end_sort = function(){
@@ -51,7 +56,7 @@ class Method{
 	}
 }
 //Bubble sort
-Method.prototype.busort = function(){
+Method.prototype["Bubble sort".toLowerCase()] = function(){
 	let i = 0;
 	let max = this.num;
 	c.fillStyle = "#ffffff";
@@ -89,7 +94,7 @@ Method.prototype.busort = function(){
 	main();
 }
 //Insertion sort
-Method.prototype.insort = function(){
+Method.prototype["Insertion sort".toLowerCase()] = function(){
 	let max = 1;
 	let i = max + 1;
 	// let count = 0;
@@ -123,7 +128,7 @@ Method.prototype.insort = function(){
 	main();
 }
 //Merge Sort
-Method.prototype.mesort = function (){
+Method.prototype["Merge sort".toLowerCase()] = function (){
 	c.fillStyle = "#ffffff";
 	this.status = 1;
 	//Start Timer
@@ -193,7 +198,7 @@ Method.prototype.mesort = function (){
 	main();
 }
 //Shell sort
-Method.prototype.shsort = function(){
+Method.prototype["Shell sort".toLowerCase()] = function(){
 	c.fillStyle = "#ffffff";
 	this.status = 1;
 	//Start Timer
@@ -203,7 +208,7 @@ Method.prototype.shsort = function(){
 	let gap = Math.floor(this.data.length / 2);
 	let i = gap, changes = 0;
 	let temp_index = gap;
-	let con = 0;
+	let con = 0; //Finding changes mode
 	let main = () =>{
 		this.req = requestAnimationFrame(main);
 		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0 && this.data[temp_index][1] < this.data[temp_index - gap][1]){
