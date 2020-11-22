@@ -215,7 +215,7 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 			[this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
 			temp_index -= gap;
 			changes++;
-			if (con) gap =this.data.length / 4 ;
+			if (con) gap = this.data.length / 4 ;
 			con = 0;
 		}
 		else{
