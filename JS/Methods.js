@@ -251,6 +251,7 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 	}
 	main();
 }
+
 //--Failed Stuffs--//
 
 // Method.prototype.msort1 = function(){
