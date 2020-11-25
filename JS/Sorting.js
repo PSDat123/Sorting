@@ -9,7 +9,7 @@ let num_ip = document.querySelector(".ip");
 let data = [];
 
 let method = new Method(parseInt(num_ip.value),data,canvas);
-
+let default_num = parseInt(num_ip.value); 
 // method.description = Object.getOwnPropertyNames(Method.prototype);
 // method.description.shift();
 // console.log(method.description);
@@ -17,6 +17,7 @@ for(let i of method.description){
 	let tag = document.createElement("OPTION");
 	let text = document.createTextNode(i);
 	tag.appendChild(text)
+	tag.classList.add("opts");
 	// tag.value = i.match(/^(?:\w){2}/g).join("").trim() + "sort";
 	tag.value = i.toLowerCase();
 	current_opt.appendChild(tag);
@@ -28,7 +29,12 @@ current_opt.addEventListener("change", change_method);
 num_ip.addEventListener("change", () => { 
 	cancelAnimationFrame(method.req);
 	method.status = 0;
-	method.num = parseInt(num_ip.value); 
+	method.num = parseInt(num_ip.value);
+	if (method.num < +num_ip.min || method.num > +num_ip.max){ 
+		num_ip.value = default_num;
+		method.num = default_num;
+		alert("Invalid number (Too high or too low)");
+	}
 	setup();
 });
 
@@ -41,7 +47,7 @@ function setup(){
 	method.setRandomData();	
 	method.updatePara();
 
-	c.fillStyle = "#ffffff";
+	method.set_default_fill();
 	method.showData();
 }
 setup();

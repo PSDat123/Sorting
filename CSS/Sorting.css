@@ -19,6 +19,7 @@ canvas{
 
 .nav-bar{
 	display: block;
+	background: whitesmoke;
 	box-shadow: 0 5px 5px white;
 	overflow: auto;
 
@@ -38,6 +39,7 @@ canvas{
 	background: none;
 	border: 1px solid black;
 
+	/* font: inherit; */
 	padding: 10px 20px;
 	margin: 1em;
 	display: block;
@@ -48,22 +50,38 @@ canvas{
 	float: left;
 }
 .ip, .selection{
+	position: relative;
 	background: none;
 	display: block;
 
+	/* font: inherit; */
 	border: 1px solid black;
 	padding: 10px 20px;
 	margin: 1em;
 	float: left;
 }
 .ip{
-	width:5em;
+	width: 5em;
+	margin-left: 0.1em;
 }
 #ip-name{
-	font-size: 16px;
-	padding: 10px 20px;
+	padding: 10px 10px;
 	float: left;
-	margin: 0.5em;
-	margin-right: 0px;
-	padding-right: 4px;
+	margin: 0.5em 0px;
+	/* padding-right: 4px; */
+}
+/* 
+.selection::after{
+	  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+} */
+.opts{
+	padding: 10px 20px;
+	min-height: 2em;
 }

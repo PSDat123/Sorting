@@ -29,9 +29,9 @@ class Method{
 		}
 	}
 	redLine = function(data_pair) {
-		c.fillStyle = "#ff0000";
+		c.fillStyle = "#ff4545";
 		c.fillRect(data_pair[0] - this.col_w / (this.c_width / this.num), this.c_height - data_pair[1], this.col_w + this.col_w / (this.c_width / this.num), data_pair[1]);
-		c.fillStyle = "#ffffff";
+		this.set_default_fill();
 	}
 	setRandomData = function(){
 		this.col_w = this.c_width / this.num;
@@ -50,16 +50,19 @@ class Method{
 	}
 	end_sort = function(){
 		cancelAnimationFrame(this.req);
-		c.fillStyle = "#00ff00";
+		c.fillStyle = "#69ff69";
 		this.showData();
 		this.status = 0;
+	}
+	set_default_fill = function(){
+		c.fillStyle = "#f0f0f0";
 	}
 }
 //Bubble sort
 Method.prototype["Bubble sort".toLowerCase()] = function(){
 	let i = 0;
 	let max = this.num;
-	c.fillStyle = "#ffffff";
+	this.set_default_fill();
 	let count = 0;
 	this.status = 1;
 	//Start Timer
@@ -98,7 +101,7 @@ Method.prototype["Insertion sort".toLowerCase()] = function(){
 	let max = 1;
 	let i = max + 1;
 	// let count = 0;
-	c.fillStyle = "#ffffff";
+	this.set_default_fill();
 	this.status = 1;
 	//Start Timer
 	const start = new Date().getTime();
@@ -129,7 +132,7 @@ Method.prototype["Insertion sort".toLowerCase()] = function(){
 }
 //Merge Sort
 Method.prototype["Merge sort".toLowerCase()] = function (){
-	c.fillStyle = "#ffffff";
+	this.set_default_fill();
 	this.status = 1;
 	//Start Timer
 	const start = new Date().getTime();
@@ -178,7 +181,7 @@ Method.prototype["Merge sort".toLowerCase()] = function (){
 			this.showData();
 			c.fillStyle = "#00ffff";//cyan
 			c.fillRect(this.data[m + 1][0], this.c_height - this.data[m + 1][1], this.col_w, this.data[m + 1][1]);
-			c.fillStyle = "#ffffff";
+			this.set_default_fill();
 			//Red line
 			this.redLine(this.data[l + l1 + l2]);
 			con? l2++ : l1++;
@@ -189,7 +192,7 @@ Method.prototype["Merge sort".toLowerCase()] = function (){
 			this.showData();
 			c.fillStyle = "#00ffff";//cyan
 			c.fillRect(this.data[m + 1][0], this.c_height - this.data[m + 1][1], this.col_w, this.data[m + 1][1]);
-			c.fillStyle = "#ffffff";
+			this.set_default_fill();
 			//Red line
 			this.redLine(this.data[l + l1 + l2]);
 			con ? l2++ : l1++;
@@ -199,7 +202,7 @@ Method.prototype["Merge sort".toLowerCase()] = function (){
 }
 //Shell sort
 Method.prototype["Shell sort".toLowerCase()] = function(){
-	c.fillStyle = "#ffffff";
+	this.set_default_fill();
 	this.status = 1;
 	//Start Timer
 	const start = new Date().getTime();
