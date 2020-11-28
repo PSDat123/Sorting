@@ -23,12 +23,28 @@ for(let i of method.description){
 	current_opt.appendChild(tag);
 }
 
-start_btn.addEventListener("click", start_sort);
+start_btn.addEventListener("click", () =>{
+	method.status = !method.status;
+	// start_btn.innerHTML = method.status ? "Stop" : "Start";
+	method.status ? (() => { 
+		start_btn.firstChild.classList = "fas fa-pause";
+		start_btn.lastChild.data = " STOP";
+		start_sort();
+	})() : (()=>{
+		start_btn.firstChild.classList = "fas fa-play";
+		start_btn.lastChild.data = " START";
+		stop_sort();
+	})();
+	
+});
+method.callBack = function() {
+	start_btn.firstChild.classList = "fas fa-play";
+	start_btn.lastChild.data = " START";
+}
 window.addEventListener("resize", setup);
 current_opt.addEventListener("change", change_method);
 num_ip.addEventListener("change", () => { 
-	cancelAnimationFrame(method.req);
-	method.status = 0;
+	stop_sort();
 	method.num = parseInt(num_ip.value);
 	if (method.num < +num_ip.min || method.num > +num_ip.max){ 
 		num_ip.value = default_num;
@@ -61,12 +77,17 @@ function change_method() {
 change_method();
 
 function start_sort(){
-	if(!method.status && method.num >= +num_ip.min){
+	if(method.num >= +num_ip.min){
 		cancelAnimationFrame(method.req);
 		Function(fn)();
 	}
 	// start_btn.removeEventListener("click", start_sort);
 	// method.Isort();
 	// start_btn.addEventListener("click", start_sort);
+}
+
+function stop_sort() {
+	cancelAnimationFrame(method.req);
+	method.status = 0;
 }
 

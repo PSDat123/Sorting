@@ -11,29 +11,30 @@ class Method{
 		this.col_w = this.c_width / this.num;
 		this.status = 0;
 		this.req = 0;
+		this.speed = 1;
 		this.description = Object.keys(Method.prototype)
 							.map(s => s.split(" ")
 								.map(s1 => s1[0].toUpperCase() + s1.substr(1)).join(" ")).sort();
 	}
-	updatePara = function(){
+	updatePara(){
 		for (let i = 0; i < this.data.length; i++) {
 			this.col_w = this.c_width / this.num;
 			this.data[i][0] = i * this.col_w;
 		}
 	}
-	showData = function(){
+	showData(){
 		c.clearRect(0, 0, this.c_width, this.c_height);
 		for (let i = 0; i < this.num; i++) {
 			// c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.col_w + this.col_w / (this.c_width / this.num));
 			c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.data[i][1]);
 		}
 	}
-	redLine = function(data_pair) {
-		c.fillStyle = "#ff4545";
+	redLine(data_pair) {
+		c.fillStyle = "#ff0505";
 		c.fillRect(data_pair[0] - this.col_w / (this.c_width / this.num), this.c_height - data_pair[1], this.col_w + this.col_w / (this.c_width / this.num), data_pair[1]);
 		this.set_default_fill();
 	}
-	setRandomData = function(){
+	setRandomData(){
 		this.col_w = this.c_width / this.num;
 		let cur_l = this.data.length;
 		if (this.num < cur_l){
@@ -48,84 +49,102 @@ class Method{
 			//sin//this.data.push([i * this.col_w, (this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2)]);
 		}
 	}
-	end_sort = function(){
+	end_sort(){
 		cancelAnimationFrame(this.req);
-		c.fillStyle = "#69ff69";
+		c.fillStyle = "#00ff00";
 		this.showData();
 		this.status = 0;
+		this.callBack();
 	}
-	set_default_fill = function(){
+	set_default_fill(){
 		c.fillStyle = "#f0f0f0";
+	}
+	callBack(){
+
 	}
 }
 //Bubble sort
 Method.prototype["Bubble sort".toLowerCase()] = function(){
-	let i = 0;
-	let max = this.num;
 	this.set_default_fill();
-	let count = 0;
 	this.status = 1;
 	//Start Timer
 	const start = new Date().getTime();
 	console.log(`Start: ${start}`);
 
+	let count = 0;
+	let i = 0;
+	let max = this.num;
+	let temp = 0;
 	let main = () => {
 		this.req = requestAnimationFrame(main);
 		this.showData();
 		this.redLine(this.data[i]);
-		if(i + 1 < this.num && this.data[i][1] > this.data[i+1][1]){
-			[this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
-			count = 0;
-		}
-		else{
-			count++;
-		}	
-		if (count >= max){
-			this.end_sort();
-			//End Timer
-			const end = new Date().getTime();
-			console.log(`End: ${end}`);
-			console.log(`Time taken: ${end - start}ms`); //Time taken
-		}
-		i++;
-		if(i >= max){
-			max-= count;
-			count = 0;
-			i = 0;
+		for(let n = 0; n < this.speed; n++){
+			if(i + 1 < max && this.data[i][1] > this.data[i+1][1]){
+				temp = this.data[i][1];
+				this.data[i][1] = this.data[i + 1][1];
+				this.data[i + 1][1] = temp;
+				// [this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
+				count = 0;
+			}
+			else{
+				count++;
+			}	
+			if (count >= max){
+				this.end_sort();
+				//End Timer
+				const end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
+				break;
+			}
+			i++;
+			if(i >= max){
+				max-= count;
+				count = 0;
+				i = 0;
+			}
 		}
 	}
 	main();
 }
 //Insertion sort
 Method.prototype["Insertion sort".toLowerCase()] = function(){
-	let max = 1;
-	let i = max + 1;
-	// let count = 0;
 	this.set_default_fill();
 	this.status = 1;
 	//Start Timer
 	const start = new Date().getTime();
 	console.log(`Start: ${start}`);
 
+	let max = 1;
+	let i = max + 1;
+	let temp = 0;
 	let main = () => {
 		this.req = requestAnimationFrame(main);
-		i--;
+		
 		this.showData();
 		this.redLine(this.data[i]);
-		if(i - 1 >= 0 && this.data[i][1] < this.data[i-1][1]){
-			[this.data[i][1], this.data[i-1][1]] = [this.data[i-1][1], this.data[i][1]];
-		}
-		else{
-			max++;
-			i=max + 1;
-			// count = 0;
-		}
-		if(max >= this.num) {
-			this.end_sort();
-			//End Timer
-			const end = new Date().getTime();
-			console.log(`End: ${end}`);
-			console.log(`Time taken: ${end - start}ms`); //Time taken
+		for(let n = 0; n < this.speed; n++){
+			i--;
+			if(i - 1 >= 0 && this.data[i][1] < this.data[i-1][1]){
+				temp = this.data[i][1];
+				this.data[i][1] = this.data[i - 1][1];
+				this.data[i - 1][1] = temp;
+				// [this.data[i][1], this.data[i-1][1]] = [this.data[i-1][1], this.data[i][1]];
+			}
+			else{
+				max++;
+				i=max + 1;
+				// count = 0;
+			}
+			if(max >= this.num) {
+				this.end_sort();
+				//End Timer
+				const end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
+				break;
+			}
 		}
 	}
 	main();
@@ -211,11 +230,15 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 	let gap = Math.floor(this.data.length / 2);
 	let i = gap, changes = 0;
 	let temp_index = gap;
-	let con = 0; //Finding changes mode
+	let con = 0; //Finding-changes mode
+	let temp = 0;
 	let main = () =>{
 		this.req = requestAnimationFrame(main);
 		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0 && this.data[temp_index][1] < this.data[temp_index - gap][1]){
-			[this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
+			temp = this.data[temp_index][1];
+			this.data[temp_index][1] = this.data[temp_index - gap][1];
+			this.data[temp_index - gap][1] = temp;
+			// [this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
 			temp_index -= gap;
 			changes++;
 			if (con) gap = this.data.length / 4 ;
@@ -254,7 +277,57 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 	}
 	main();
 }
+//Cocktail Shaker Sort
+Method.prototype["Cocktail sort".toLowerCase()] = function(){
+	this.set_default_fill();
+	this.status = 1;
+	//Start Timer
+	const start = new Date().getTime();
+	console.log(`Start: ${start}`);
 
+	let i = 0, min = 0, max = this.data.length - 1, inc = 1;
+	let temp = 0, count = 0;
+	let main = () => {
+		this.req = requestAnimationFrame(main);
+		this.showData();
+		this.redLine(this.data[i]);
+		for(let n = 0; n < this.speed; n++){
+			if (min <= i + inc && i + inc <= max) {
+				if ((inc > 0 && this.data[i][1] > this.data[i + inc][1]) || (inc < 0 && this.data[i][1] < this.data[i - 1][1])) {
+					temp = this.data[i][1];
+					this.data[i][1] = this.data[i + inc][1];
+					this.data[i + inc][1] = temp;
+					count = 0;
+				}
+				else{
+					count++;
+				}
+				i += inc;
+			}
+			else{
+				inc = -inc;
+				i >= max ? (() => {
+					max -= count;
+					i = max;
+				}
+				)() : (() => {
+					min += count;
+					i = min;
+				}
+				)();
+			}
+			if(min > max){
+				this.end_sort();
+				//End Timer
+				const end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
+				break;
+			}
+		}
+	}
+	main();
+}
 //--Failed Stuffs--//
 
 // Method.prototype.msort1 = function(){
