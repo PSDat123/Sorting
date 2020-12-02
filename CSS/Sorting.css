@@ -3,7 +3,7 @@ body{
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	font-family: Verdana, Arial;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 a{
 	text-decoration: none;
@@ -26,7 +26,7 @@ canvas{
 	
 	background: whitesmoke;
 	/* box-shadow: 0 5px 3px 0.1em whitesmoke; */
-	overflow: auto;
+	/* overflow: auto; */
 
 }
 .nav-items{
@@ -50,23 +50,25 @@ canvas{
 	padding: 10px 20px;
 	margin: 0.5em;
 	display: block;
+	cursor: pointer;
 	/* float: left; */
-	transition: background 100ms ease-in;
+	transition: background 100ms ease-in , color 100ms ease-out;
 }
 .start:hover{
-	background: rgb(190, 190, 190);
+	background: black;
+	color: white;
+	box-shadow: 0 0 0 4px black;
 }
-.start:active{
+/* .start:active{
 	background: grey;
-}
+	color: black;
+} */
 .start:focus{
 	outline: none;
+	box-shadow: 0 0 0 4px black;
 }
 
-#form{
-	overflow: auto;
-	/* float: left; */
-}
+
 .ip, .selection{
 	position: relative;
 	background: none;
@@ -89,18 +91,69 @@ canvas{
 	margin: 0.5em 0px;
 	/* padding-right: 4px; */
 }
-/* 
-.selection::after{
-	  position: absolute;
-  content: "";
-  top: 14px;
-  right: 10px;
-  width: 0;
-  height: 0;
-  border: 6px solid transparent;
-  border-color: #fff transparent transparent transparent;
-} */
+
 .opts{
 	padding: 10px 20px;
 	min-height: 2em;
+}
+.option-wrap{
+	position: relative;
+	display: block;
+}
+.option-wrap select{
+	display: none;
+}
+.select-items{
+	position: absolute;
+	color: whitesmoke;
+	background-color: black;
+	right: 0;
+	left: 0;
+	border: 2px solid whitesmoke;
+	/* border-color: black whitesmoke whitesmoke whitesmoke; */
+	z-index: 10;
+}
+.hide-items{
+	display: none;
+}
+.current-select{
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-weight: bold;
+	padding: 1ch 4ch 1ch 2ch;
+	cursor: pointer;
+	user-select: none;
+	transition: background 400ms ease-in, color 400ms ease-out;
+	border: 2px solid whitesmoke;
+	/* border-color: whitesmoke whitesmoke transparent whitesmoke; */
+	
+}
+.current-select:hover, .active{
+	background: black;
+	color: white;
+}
+
+/* .current-select:after{
+	position: absolute;
+	content: "";
+	top: 50%;
+	right: 1%;
+	transform: translate(0,-25%);
+	border: 6px solid transparent;
+	border-color: black transparent transparent transparent;
+} */
+.arrow-down{
+	position: absolute;
+	font-size: 24px;
+	right: 3%;
+	transform: translate(0,-15%);
+}
+.choices{
+	font-weight: bold;
+	text-align: center;
+	padding: 0.5ch;
+	transition: background 100ms ease-in;
+	cursor: pointer;
+}
+.choices:hover{
+	background: gray;
 }

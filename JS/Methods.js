@@ -123,7 +123,7 @@ Method.prototype["Insertion sort".toLowerCase()] = function(){
 		this.req = requestAnimationFrame(main);
 		
 		this.showData();
-		this.redLine(this.data[i]);
+		this.redLine(this.data[i-1]);
 		for(let n = 0; n < this.speed; n++){
 			i--;
 			if(i - 1 >= 0 && this.data[i][1] < this.data[i-1][1]){

@@ -1,27 +1,5 @@
 // import Method from "/Methods.js";
 
-let nav_bar = document.querySelector(".nav-bar");
-let start_btn = document.querySelector(".start");
-let current_opt = document.querySelector(".selection");
-let num_ip = document.querySelector(".ip");
-
-// let num = parseInt(num_ip.value);
-let data = [];
-
-let method = new Method(parseInt(num_ip.value),data,canvas);
-let default_num = parseInt(num_ip.value); 
-// method.description = Object.getOwnPropertyNames(Method.prototype);
-// method.description.shift();
-// console.log(method.description);
-for(let i of method.description){
-	let tag = document.createElement("OPTION");
-	let text = document.createTextNode(i);
-	tag.appendChild(text)
-	tag.classList.add("opts");
-	// tag.value = i.match(/^(?:\w){2}/g).join("").trim() + "sort";
-	tag.value = i.toLowerCase();
-	current_opt.appendChild(tag);
-}
 
 start_btn.addEventListener("click", () =>{
 	method.status = !method.status;
@@ -31,8 +9,6 @@ start_btn.addEventListener("click", () =>{
 		start_btn.lastChild.data = " STOP";
 		start_sort();
 	})() : (()=>{
-		start_btn.firstChild.classList = "fas fa-play";
-		start_btn.lastChild.data = " START";
 		stop_sort();
 	})();
 	
@@ -42,7 +18,7 @@ method.callBack = function() {
 	start_btn.lastChild.data = " START";
 }
 window.addEventListener("resize", setup);
-current_opt.addEventListener("change", change_method);
+cur_select.addEventListener("method_changed", change_method, false);
 num_ip.addEventListener("change", () => { 
 	stop_sort();
 	method.num = parseInt(num_ip.value);
@@ -71,7 +47,8 @@ setup();
 let fn = '';
 function change_method() {
 	method.status = 0;
-	fn = `method["${current_opt.value.toLowerCase()}"]?.()`;
+	method.callBack();
+	fn = `method["${cur_select.getAttribute("value").toLowerCase()}"]?.()`;
 	// console.log(fn);
 }
 change_method();
@@ -89,5 +66,6 @@ function start_sort(){
 function stop_sort() {
 	cancelAnimationFrame(method.req);
 	method.status = 0;
+	method.callBack();
 }
 
