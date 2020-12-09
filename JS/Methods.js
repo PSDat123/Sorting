@@ -17,16 +17,17 @@ class Method{
 								.map(s1 => s1[0].toUpperCase() + s1.substr(1)).join(" ")).sort();
 	}
 	updatePara(){
-		for (let i = 0; i < this.data.length; i++) {
+		for (var i = 0, l = this.data.length; i !== l; i++) {
 			this.col_w = this.c_width / this.num;
 			this.data[i][0] = i * this.col_w;
 		}
 	}
 	showData(){
 		c.clearRect(0, 0, this.c_width, this.c_height);
-		for (let i = 0; i < this.num; i++) {
+		var a = (this.col_w * this.num ) / this.c_width;
+		for (var i = 0, l = this.data.length; i !== l; i++) {
 			// c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.col_w + this.col_w / (this.c_width / this.num));
-			c.fillRect(this.data[i][0] - this.col_w / (this.c_width / this.num), this.c_height - this.data[i][1], this.col_w + this.col_w / (this.c_width / this.num), this.data[i][1]);
+			c.fillRect(this.data[i][0] - a, this.c_height - this.data[i][1], this.col_w + a, this.data[i][1]);
 		}
 	}
 	redLine(data_pair) {
@@ -44,7 +45,7 @@ class Method{
 			return;
 		}
 		for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
-			this.data.push([i * this.col_w, Math.floor(this.c_height - Math.random() * this.c_height)]);
+			this.data.push([i * this.col_w, ~~(this.c_height - Math.random() * this.c_height)]);
 			//cos//this.data.push([i * this.col_w, (this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 )]);
 			//sin//this.data.push([i * this.col_w, (this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2)]);
 		}
@@ -79,7 +80,7 @@ Method.prototype["Bubble sort".toLowerCase()] = function(){
 		this.req = requestAnimationFrame(main);
 		this.showData();
 		this.redLine(this.data[i]);
-		for(let n = 0; n < this.speed; n++){
+		for(let n = 0, s = this.speed; n < s; n++){
 			if(i + 1 < max && this.data[i][1] > this.data[i+1][1]){
 				temp = this.data[i][1];
 				this.data[i][1] = this.data[i + 1][1];
@@ -103,6 +104,62 @@ Method.prototype["Bubble sort".toLowerCase()] = function(){
 				max-= count;
 				count = 0;
 				i = 0;
+			}
+		}
+	}
+	main();
+}
+//Comb sort
+Method.prototype["Comb sort".toLowerCase()] = function () {
+	this.set_default_fill();
+	this.status = 1;
+	//Start Timer
+	const start = new Date().getTime();
+	console.log(`Start: ${start}`);
+
+	let max = this.data.length - 1;
+	let gap = ~~((this.data.length * 10) / 13);
+	let i = 0, temp = 0, count = 0, con = 0, pgap = gap;
+
+	let main = () => {
+		this.req = requestAnimationFrame(main);
+		this.showData();
+		this.redLine(this.data[i]);
+		for (let n = 0, s = this.speed; n < s; n++) {
+			if (i + gap <= max && this.data[i][1] > this.data[i + gap][1]) {
+				temp = this.data[i][1];
+				this.data[i][1] = this.data[i + gap][1];
+				this.data[i + gap][1] = temp;
+				// [this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
+				if(con){
+					gap = pgap;
+					console.log(gap);
+				}
+				con = 0;
+				count = 0;
+			}
+			else {	
+				count++;
+			}
+			if (n == s-1) this.redLine(this.data[i + gap]);	
+			i++;
+			if (i + gap > max) {
+				i = 0;
+				pgap = gap;
+				gap = ~~((gap * 10) / 13);
+				if (gap < 1 && count >= max) {
+					this.end_sort();
+					//End Timer
+					const end = new Date().getTime();
+					console.log(`End: ${end}`);
+					console.log(`Time taken: ${end - start}ms`); //Time taken
+					break;
+				}
+				else if (gap < 1 || count >= max - pgap) {
+					con = 1;
+					gap = 1;
+				}
+				count = 0;
 			}
 		}
 	}
@@ -160,7 +217,7 @@ Method.prototype["Merge sort".toLowerCase()] = function (){
 	let queue = [];
 	(function merge_index(l,r){
 		if(l<r){
-			var m = Math.floor(l + (r - l) / 2);
+			var m = ~~(l + (r - l) / 2);
 			merge_index(l,m);
 			merge_index(m+1, r);
 			queue.push([l,m,r]);
@@ -227,21 +284,21 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 	const start = new Date().getTime();
 	console.log(`Start: ${start}`);
 
-	let gap = Math.floor(this.data.length / 2);
+	let max = this.data.length;
+	let gap = ~~(this.data.length / 2);
 	let i = gap, changes = 0;
-	let temp_index = gap;
+	let temp_index = gap, temp = 0, pgap = gap;
 	let con = 0; //Finding-changes mode
-	let temp = 0;
 	let main = () =>{
 		this.req = requestAnimationFrame(main);
-		if((temp_index - gap)*((temp_index - gap) - this.data.length) <= 0 && this.data[temp_index][1] < this.data[temp_index - gap][1]){
+		if(0 <= temp_index - gap && this.data[temp_index][1] < this.data[temp_index - gap][1]){
 			temp = this.data[temp_index][1];
 			this.data[temp_index][1] = this.data[temp_index - gap][1];
 			this.data[temp_index - gap][1] = temp;
 			// [this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
 			temp_index -= gap;
 			changes++;
-			if (con) gap = this.data.length / 4 ;
+			if (con) gap = pgap;
 			con = 0;
 		}
 		else{
@@ -250,30 +307,31 @@ Method.prototype["Shell sort".toLowerCase()] = function(){
 		}
 		this.showData();
 		this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
-		if (i >= this.data.length) {
+		if (i >= max) {
+			pgap = gap;
 			if (con) {gap = 0; i = gap;}
-			else (
-				() => changes ? (() => {
-					gap = Math.floor(gap / 2);
+			else {
+				if(changes){
+					gap = ~~(gap / 2);
 					i = gap;
 					temp_index = gap;
-				})() : 
-				(() => {
-					gap = 1; 
+				}
+				else{
+					gap = 1;
 					con = 1;
 					i = gap;
 					temp_index = gap;
-				})()
-			)();
+				}
+			}
+			if (gap <= 0) {
+				this.end_sort();
+				//End Timer
+				const end = new Date().getTime();
+				console.log(`End: ${end}`);
+				console.log(`Time taken: ${end - start}ms`); //Time taken
+			}
 		}
 		this.redLine(this.data[i]);
-		if (gap <= 0) {
-			this.end_sort();
-			//End Timer
-			const end = new Date().getTime();
-			console.log(`End: ${end}`);
-			console.log(`Time taken: ${end - start}ms`); //Time taken
-		}
 	}
 	main();
 }
@@ -328,85 +386,8 @@ Method.prototype["Cocktail sort".toLowerCase()] = function(){
 	}
 	main();
 }
-//--Failed Stuffs--//
 
-// Method.prototype.msort1 = function(){
-// 	// this.status = 1;
-// 	let merge = (arr, l, m, r) =>{
-// 		// let c = [];
-// 		let n1 = m - l + 1;
-// 		let n2 = r - m;
-// 		// console.log(this.data);
-// 		let L = [], R = [];
-// 		for (let i = 0; i < n1; i++)
-// 			L[i] = arr[l + i];
-// 		for (let j = 0; j < n2; j++)
-// 			R[j] = arr[m + 1 + j];
-// 		// let L = this.data.slice(l, m + 1);
-// 		// // console.log(this.data.slice(l, l + n1));
-// 		// let R = this.data.slice(m + 1, r + 1);
-// 		// console.log(L,R);
-// 		let  i = 0, j = 0,k = l;
-// 		while(i < n1 && j < n2){
-// 			if(L[i][1] <= R[j][1]){
-// 				arr[k] = [arr[k][0],L[i][1]];
-// 				// console.log(arr[k][1]);
-// 				// c.push(b.shift());
-// 				i++;
-// 			}
-// 			else{
-// 				arr[k] = [arr[k][0], R[j][1]];
-// 				// c.push(a.shift());
-// 				j++;
-// 			}
-// 			k++;
-// 		}
-// 		while(i < n1){
-// 			arr[k] = [arr[k][0], L[i][1]];
-// 			k++;
-// 			i++;
-// 			// c.push(a.shift());
-// 		}
-// 		while(j < n2){
-// 			arr[k] = [arr[k][0], R[j][1]];
-// 			k++;
-// 			j++;
-// 			// c.push(b.shift());
-// 		}
-		
-		
-// 		this.data = arr;
-// 		this.showData();
-		
-// 		// console.log(arr);
-// 		// return c;
-// 	}
-// 	// let temp_a = this.data;
-// 	let mergesort = (arr, l, r) =>{
-// 		// var m = Math.floor(arr.length / 2)
-// 		// if(arr.length == 1){
-// 		// 	// console.log("sda");
-// 		// 	return arr;
-// 		// }
-
-// 		if(l < r){
-// 			let m = Math.floor(l + (r - l) / 2);
-
-// 			setTimeout(() => {
-// 				mergesort(arr, l, m);
-// 			}, 5);
-// 			setTimeout(() => {
-// 				mergesort(arr, m + 1, r);
-// 			}, 5);
-			
-// 			// console.log(this.data);
-// 			setTimeout(() => {
-// 				merge(arr, l, m, r);
-// 			}, 5);
-			
-// 		}
-// 	} 
+//Quick Sort
+Method.prototype["Quick Sort".toLowerCase()] = function() {
 	
-// 	mergesort(this.data,0 , this.data.length - 1);
-	
-// }
+}
