@@ -1,0 +1,30 @@
+{
+  "name": "sorting",
+  "version": "1.0.0",
+  "description": "Web for sorting algorithms.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PSDat123/Sorting.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PSDat123/Sorting/issues"
+  },
+  "homepage": "https://psdat123.github.io/Sorting/",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "browserslist": [
+    "since 2017-06"
+  ],
+  "dependencies": {
+    "gh-pages": "^3.1.0"
+  }
+}
