@@ -383,37 +383,44 @@ Method.prototype["Quick Sort".toLowerCase()] = function() {
 		}
 	}
 	//Lomuto Partition
-	let partition_l = async (l, r) => {
-		let pivot_value = this.data[r][1];
-		let temp = 0, count = 0;
-		let i = l, j = 0;
+	// let partition_l = async (l, r) => {
+	// 	let pivot_value = this.data[r][1];
+	// 	let temp = 0;
+	// 	let i = l, j = 0;
 
-		for(j = l; j < r; j++){
-			await sleep();
-			this.showData();
-			this.redLine(this.data[i]);
-			this.redLine(this.data[j]);
-			if(this.data[j][1] <= pivot_value){
-				temp = this.data[i][1]; //swap
-				this.data[i][1] = this.data[j][1];
-				this.data[j][1] = temp;
-				i++;
-				count++;
-			}
-		}
-		temp = this.data[i][1]; //swap
-		this.data[i][1] = this.data[r][1];
-		this.data[r][1] = temp;
-		return i;
-	}
+	// 	for(j = l; j < r; j++){
+	// 		await sleep();
+	// 		this.showData();
+	// 		this.redLine(this.data[i]);
+	// 		this.redLine(this.data[j]);
+	// 		if(this.data[j][1] <= pivot_value){
+	// 			temp = this.data[i][1]; //swap
+	// 			this.data[i][1] = this.data[j][1];
+	// 			this.data[j][1] = temp;
+	// 			i++;
+	// 		}
+	// 	}
+	// 	temp = this.data[i][1]; //swap
+	// 	this.data[i][1] = this.data[r][1];
+	// 	this.data[r][1] = temp;
+	// 	return i;
+	// }
 
 	//Hoare partition
 	let partition_h = async (l, r) => {
-		let pivot_value = this.data[l][1];
 		let temp = 0, con_i = 0, con_j = 0;
+		var ran = Math.floor(Math.random() * (r - l + 1) + l);
+		temp = this.data[ran][1]; //swap
+		this.data[ran][1] = this.data[l][1];
+		this.data[l][1] = temp;
+
+		this.redLine(this.data[ran]);
+		this.redLine(this.data[l]);
+
+		let pivot_value = this.data[l][1];
 		let i = l - 1, j = r + 1;
-		
-		while(true){
+
+		for(;;){
 			await sleep();
 			if(!con_i){
 				i++;
@@ -514,6 +521,6 @@ Method.prototype["Quick Sort".toLowerCase()] = function() {
 	// 		//Red line
 	// 		this.redLine(this.data[l + l1 + l2]);
 	// 		con ? l2++ : l1++;
-	// 	}
+	// 		}
 	// } 
 	// main();

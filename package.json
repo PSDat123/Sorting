@@ -19,6 +19,7 @@
   },
   "homepage": "https://psdat123.github.io/Sorting/",
   "devDependencies": {
+    "eslint": "^7.16.0",
     "parcel-bundler": "^1.12.4"
   },
   "browserslist": [
