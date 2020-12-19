@@ -1,0 +1,162 @@
+body{
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+a{
+	text-decoration: none;
+	
+}
+
+canvas{
+	border: 2px solid black;
+	background: black;
+	width: 100%;
+	height: 100%;
+}
+
+.nav-bar{
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+	position: relative;
+	
+	background: whitesmoke;
+	/* box-shadow: 0 5px 3px 0.1em whitesmoke; */
+	/* overflow: auto; */
+
+}
+.page-name{  /*SORTING ALGORITHMS*/
+	display: block;
+	padding: 1em;
+	overflow: auto;
+
+	color: black;
+	font-size: 1.25rem;
+	font-weight: bold;
+	letter-spacing: 1px;
+	/* float: left; */
+}
+.start{
+	background: whitesmoke;
+	border: none;
+	flex-shrink: 1;
+
+	font-size: initial;
+	font-weight: bold;
+	padding: 1vh 1vw;
+	margin: 0.5em;
+	display: block;
+	cursor: pointer;
+	/* float: left; */
+	transition: background 100ms ease-in , color 100ms ease-out;
+}
+.start:hover{
+	background: black;
+	color: white;
+	box-shadow: 0 0 0 4px black;
+}
+/* .start:active{
+	background: grey;
+	color: black;
+} */
+.start:focus{
+	outline: none;
+	box-shadow: 0 0 0 4px black;
+}
+
+
+.ip, .selection{  /*AMOUNT,SELECTIONS */
+	position: relative;
+	background: none;
+	display: block;
+
+	/* font: inherit; */
+	border: 1px solid black;
+	padding: 10px 20px;
+	margin: 0.5em;
+	/* float: left; */
+}
+.ip{ /*AMOUNT*/
+	width: 6vw;
+	padding: 1.5vh 1.5vw;
+	margin-left: 0.1em;
+}
+#ip-name{ /*AMMOUNT NAME*/
+	padding: 1vh 1vw;
+	font-weight: bold;
+	/* float: left; */
+	margin: 0.5em 0px;
+	/* padding-right: 4px; */
+}
+
+.opts{
+	padding: 10px 20px;
+	min-height: 2em;
+}
+.option-wrap{
+	position: relative;
+	display: block;
+}
+.option-wrap select{
+	display: none;
+}
+.select-items{
+	position: absolute;
+	color: whitesmoke;
+	background-color: black;
+	right: 0;
+	left: 0;
+	border: 2px solid whitesmoke;
+	/* border-color: black whitesmoke whitesmoke whitesmoke; */
+	z-index: 10;
+}
+.hide-items{
+	display: none;
+}
+.current-select{
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-weight: bold;
+	padding: 1vh 2.75vw 1vh 1vw;
+	cursor: pointer;
+	user-select: none;
+	transition: background 400ms ease-in, color 400ms ease-out;
+	border: 2px solid whitesmoke;
+	/* border-color: whitesmoke whitesmoke transparent whitesmoke; */
+	
+}
+.current-select:hover, .active{
+	background: black;
+	color: white;
+}
+
+/* .current-select:after{
+	position: absolute;
+	content: "";
+	top: 50%;
+	right: 1%;
+	transform: translate(0,-25%);
+	border: 6px solid transparent;
+	border-color: black transparent transparent transparent;
+} */
+.arrow-down{
+	position: absolute;
+	font-size: 1.5rem;
+	right: 0.75vw;
+	transform: translate(0,-15%);
+}
+.choices{
+	font-weight: bold;
+	text-align: center;
+	padding: 1vh 2vh;
+	transition: background 100ms ease-in;
+	cursor: pointer;
+}
+.choices:hover{
+	background: gray;
+}
+
+/*# sourceMappingURL=/Sorting.00fc6d7f.css.map */
