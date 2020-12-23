@@ -118,7 +118,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"JS/Methods.js":[function(require,module,exports) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -137,13 +137,7 @@ class Method {
     this.req = 0;
     this.speed = 1;
     this.description = Object.keys(Method.prototype).map(s => s.split(" ").map(s1 => s1[0].toUpperCase() + s1.substr(1)).join(" ")).sort();
-  }
-
-  updatePara() {
-    for (var i = 0, l = this.data.length; i !== l; i++) {
-      this.col_w = this.c_width / this.num;
-      this.data[i][0] = i * this.col_w;
-    }
+    this.mode = "column";
   }
 
   showData() {
@@ -175,7 +169,7 @@ class Method {
     }
 
     for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
-      this.data.push([i * this.col_w, ~~(this.c_height - Math.random() * this.c_height)]); //cos//this.data.push([i * this.col_w, (this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 )]);
+      this.data.push([i * this.col_w, ~~(this.c_height - Math.random() * (this.c_height - 5))]); //cos//this.data.push([i * this.col_w, (this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 )]);
       //sin//this.data.push([i * this.col_w, (this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2)]);
     }
   }
@@ -195,28 +189,30 @@ class Method {
 
   callBack() {}
 
-} //Bubble sort
+  async sleep() {
+    return new Promise(requestAnimationFrame);
+  }
+
+} //#region Bubble Sort
 
 
 exports.default = Method;
 
-Method.prototype["Bubble sort".toLowerCase()] = function () {
+Method.prototype["Bubble sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
+  this.status = 1;
+  let count = 0,
+      i = 0,
+      max = this.num,
+      temp = 0;
 
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-  let count = 0;
-  let i = 0;
-  let max = this.num;
-  let temp = 0;
+  let main = async () => {
+    for (;;) {
+      if (!this.status) return 0;
+      await this.sleep();
+      this.showData();
+      this.redLine(this.data[i]);
 
-  let main = () => {
-    this.req = requestAnimationFrame(main);
-    this.showData();
-    this.redLine(this.data[i]);
-
-    for (let n = 0, s = this.speed; n < s; n++) {
       if (i + 1 < max && this.data[i][1] > this.data[i + 1][1]) {
         temp = this.data[i][1];
         this.data[i][1] = this.data[i + 1][1];
@@ -228,13 +224,7 @@ Method.prototype["Bubble sort".toLowerCase()] = function () {
       }
 
       if (count >= max) {
-        this.end_sort(); //End Timer
-
-        const end = new Date().getTime();
-        console.log("End: ".concat(end));
-        console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-
-        break;
+        return 1;
       }
 
       i++;
@@ -247,30 +237,32 @@ Method.prototype["Bubble sort".toLowerCase()] = function () {
     }
   };
 
-  main();
-}; //Comb sort
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+}; //#endregion
+//#region Comb Sort
 
 
-Method.prototype["Comb sort".toLowerCase()] = function () {
+Method.prototype["Comb sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
-
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-  let max = this.data.length - 1;
-  let gap = ~~(this.data.length * 10 / 13);
-  let i = 0,
+  this.status = 1;
+  let max = this.data.length - 1,
+      gap = ~~(this.data.length * 10 / 13),
+      i = 0,
       temp = 0,
       count = 0,
       con = 0,
       pgap = gap;
 
-  let main = () => {
-    this.req = requestAnimationFrame(main);
-    this.showData();
-    this.redLine(this.data[i]);
+  let main = async () => {
+    for (;;) {
+      if (!this.status) return 0;
+      await this.sleep();
+      this.showData();
+      this.redLine(this.data[i]);
 
-    for (let n = 0, s = this.speed; n < s; n++) {
       if (i + gap <= max && this.data[i][1] > this.data[i + gap][1]) {
         temp = this.data[i][1];
         this.data[i][1] = this.data[i + gap][1];
@@ -283,7 +275,7 @@ Method.prototype["Comb sort".toLowerCase()] = function () {
         count++;
       }
 
-      if (n == s - 1) this.redLine(this.data[i + gap]);
+      this.redLine(this.data[i + gap]);
       i++;
 
       if (i + gap > max) {
@@ -292,13 +284,7 @@ Method.prototype["Comb sort".toLowerCase()] = function () {
         gap = ~~(gap * 10 / 13);
 
         if (gap < 1 && count >= max) {
-          this.end_sort(); //End Timer
-
-          const end = new Date().getTime();
-          console.log("End: ".concat(end));
-          console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-
-          break;
+          return 1;
         } else if (gap < 1 || count >= max - pgap) {
           con = 1;
           gap = 1;
@@ -309,26 +295,27 @@ Method.prototype["Comb sort".toLowerCase()] = function () {
     }
   };
 
-  main();
-}; //Insertion sort
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+}; //#endregion
+//#region Insertion Sort
 
 
-Method.prototype["Insertion sort".toLowerCase()] = function () {
+Method.prototype["Insertion sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
+  this.status = 1;
+  let max = 1,
+      i = max + 1,
+      temp = 0;
 
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-  let max = 1;
-  let i = max + 1;
-  let temp = 0;
-
-  let main = () => {
-    this.req = requestAnimationFrame(main);
-    this.showData();
-    this.redLine(this.data[i - 1]);
-
-    for (let n = 0; n < this.speed; n++) {
+  let main = async () => {
+    for (;;) {
+      if (!this.status) return 0;
+      await this.sleep();
+      this.showData();
+      this.redLine(this.data[i - 1]);
       i--;
 
       if (i - 1 >= 0 && this.data[i][1] < this.data[i - 1][1]) {
@@ -341,40 +328,33 @@ Method.prototype["Insertion sort".toLowerCase()] = function () {
       }
 
       if (max >= this.num) {
-        this.end_sort(); //End Timer
-
-        const end = new Date().getTime();
-        console.log("End: ".concat(end));
-        console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-
-        break;
+        return 1;
       }
     }
   };
 
-  main();
-}; //Merge Sort
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+}; //#endregion
+//#region Merge Sort
 
 
-Method.prototype["Merge sort".toLowerCase()] = function () {
+Method.prototype["Merge sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
+  this.status = 1;
 
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-
-  function sleep() {
-    return new Promise(requestAnimationFrame);
-  }
-
-  async function merge_sort(l, r) {
+  let merge_sort = async (l, r) => {
     if (l < r) {
       var m = ~~(l + (r - l) / 2);
       await merge_sort(l, m);
       await merge_sort(m + 1, r);
       await merge(l, m, r);
     }
-  }
+
+    if (!this.status) return -1;
+  };
 
   let merge = async (l, m, r) => {
     let L = this.data.slice(l, m + 1);
@@ -384,7 +364,8 @@ Method.prototype["Merge sort".toLowerCase()] = function () {
     for (let dl = 0, dr = 0; dl + dr < il; dl++, dr++) {
       var _R$dr, _L$dl, _R$dr2;
 
-      await sleep();
+      if (!this.status) return -1;
+      await this.sleep();
       this.showData();
 
       if (((_R$dr = R[dr]) === null || _R$dr === void 0 ? void 0 : _R$dr[1]) === undefined || ((_L$dl = L[dl]) === null || _L$dl === void 0 ? void 0 : _L$dl[1]) < ((_R$dr2 = R[dr]) === null || _R$dr2 === void 0 ? void 0 : _R$dr2[1])) {
@@ -399,102 +380,97 @@ Method.prototype["Merge sort".toLowerCase()] = function () {
     }
   };
 
-  (async () => {
-    await merge_sort(0, this.data.length - 1);
-    this.end_sort(); //End Timer
-
-    const end = new Date().getTime();
-    console.log("End: ".concat(end));
-    console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-  })();
-}; //Shell sort
+  let t = (await merge_sort(0, this.data.length - 1)) || 1;
+  this.showData();
+  if (t === -1) return;
+  this.end_sort();
+}; //#endregion
+//#region Shell Sort
 
 
-Method.prototype["Shell sort".toLowerCase()] = function () {
+Method.prototype["Shell sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
-
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-  let max = this.data.length;
-  let gap = ~~(this.data.length / 2);
-  let i = gap;
-  let temp_index = gap,
+  this.status = 1;
+  let max = this.data.length,
+      gap = ~~(this.data.length / 2),
+      i = gap,
+      temp_index = gap,
       temp = 0;
 
-  let main = () => {
-    this.req = requestAnimationFrame(main);
+  let main = async () => {
+    for (;;) {
+      if (!this.status) return 0;
+      await this.sleep();
 
-    if (0 <= temp_index - gap && this.data[temp_index][1] < this.data[temp_index - gap][1]) {
-      temp = this.data[temp_index][1];
-      this.data[temp_index][1] = this.data[temp_index - gap][1];
-      this.data[temp_index - gap][1] = temp; // [this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
+      if (temp_index - gap >= 0 && this.data[temp_index][1] < this.data[temp_index - gap][1]) {
+        temp = this.data[temp_index][1];
+        this.data[temp_index][1] = this.data[temp_index - gap][1];
+        this.data[temp_index - gap][1] = temp; // [this.data[temp_index][1], this.data[temp_index - gap][1]] = [this.data[temp_index - gap][1], this.data[temp_index][1]];
 
-      temp_index -= gap; // changes++;
-      // if (con) gap = pgap;
-      // con = 0;
-    } else {
-      i++;
-      temp_index = i;
-    }
-
-    this.showData();
-    this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
-
-    if (i >= max) {
-      gap = ~~(gap / 2);
-      i = gap;
-      temp_index = gap; // pgap = gap;
-      // if (con) {gap = 0; i = gap;}
-      // else {
-      // 	if(changes){
-      // 		gap = ~~(gap / 2);
-      // 		i = gap;
-      // 		temp_index = gap;
-      // 	}
-      // 	else{
-      // 		gap = 1;
-      // 		con = 1;
-      // 		i = gap;
-      // 		temp_index = gap;
-      // 	}
-      // }
-
-      if (gap < 1) {
-        this.end_sort(); //End Timer
-
-        const end = new Date().getTime();
-        console.log("End: ".concat(end));
-        console.log("Time taken: ".concat(end - start, "ms")); //Time taken
+        temp_index -= gap; // changes++;
+        // if (con) gap = pgap;
+        // con = 0;
+      } else {
+        i++;
+        temp_index = i;
       }
-    }
 
-    this.redLine(this.data[i]);
+      this.showData();
+      this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
+
+      if (i >= max) {
+        gap = ~~(gap / 2);
+        i = gap;
+        temp_index = gap; // pgap = gap;
+        // if (con) {gap = 0; i = gap;}
+        // else {
+        // 	if(changes){
+        // 		gap = ~~(gap / 2);
+        // 		i = gap;
+        // 		temp_index = gap;
+        // 	}
+        // 	else{
+        // 		gap = 1;
+        // 		con = 1;
+        // 		i = gap;
+        // 		temp_index = gap;
+        // 	}
+        // }
+
+        if (gap < 1) {
+          return 1;
+        }
+      }
+
+      this.redLine(this.data[i]);
+    }
   };
 
-  main();
-}; //Cocktail Shaker Sort
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+}; //#endregion
+//#region Cocktail Shaker Sort
 
 
-Method.prototype["Cocktail sort".toLowerCase()] = function () {
+Method.prototype["Cocktail sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
-
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
+  this.status = 1;
   let i = 0,
       min = 0,
       max = this.data.length - 1,
-      inc = 1;
-  let temp = 0,
+      inc = 1,
+      temp = 0,
       count = 0;
 
-  let main = () => {
-    this.req = requestAnimationFrame(main);
-    this.showData();
-    this.redLine(this.data[i]);
+  let main = async () => {
+    for (;;) {
+      if (!this.status) return 0;
+      await this.sleep();
+      this.showData();
+      this.redLine(this.data[i]);
 
-    for (let n = 0; n < this.speed; n++) {
       if (min <= i + inc && i + inc <= max) {
         if (inc > 0 && this.data[i][1] > this.data[i + inc][1] || inc < 0 && this.data[i][1] < this.data[i - 1][1]) {
           temp = this.data[i][1];
@@ -519,46 +495,40 @@ Method.prototype["Cocktail sort".toLowerCase()] = function () {
       }
 
       if (min > max) {
-        this.end_sort(); //End Timer
-
-        const end = new Date().getTime();
-        console.log("End: ".concat(end));
-        console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-
-        break;
+        return 1;
       }
     }
   };
 
-  main();
-}; //Quick Sort
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+}; //#endregion
+//#region Quick Sort
 
 
-Method.prototype["Quick Sort".toLowerCase()] = function () {
+Method.prototype["Quick Sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; //Start Timer
+  this.status = 1;
+  let temp = 0;
 
-  const start = new Date().getTime();
-  console.log("Start: ".concat(start));
-
-  function sleep() {
-    return new Promise(requestAnimationFrame);
-  }
-
-  async function quickSort(l, r) {
+  let quickSort = async (l, r) => {
     if (l < r) {
-      let pivot_index = await partition_h(l, r); // if(br) return;
-
+      let pivot_index = await partition_h(l, r);
+      if (pivot_index === -1) return pivot_index;
       await quickSort(l, pivot_index);
       await quickSort(pivot_index + 1, r);
     }
-  } //Lomuto Partition
+
+    if (!this.status) return -1;
+  }; //Lomuto Partition
   // let partition_l = async (l, r) => {
   // 	let pivot_value = this.data[r][1];
   // 	let temp = 0;
   // 	let i = l, j = 0;
   // 	for(j = l; j < r; j++){
-  // 		await sleep();
+  // 		await this.sleep();
   // 		this.showData();
   // 		this.redLine(this.data[i]);
   // 		this.redLine(this.data[j]);
@@ -578,22 +548,23 @@ Method.prototype["Quick Sort".toLowerCase()] = function () {
 
 
   let partition_h = async (l, r) => {
-    let temp = 0,
-        con_i = 0,
-        con_j = 0;
-    var ran = Math.floor(Math.random() * (r - l + 1) + l);
-    temp = this.data[ran][1]; //swap
+    let con_i = 0,
+        con_j = 0; //#region --Random pivot--
+    // var ran = Math.floor(Math.random() * (r - l + 1) + l);
+    // temp = this.data[ran][1]; //swap
+    // this.data[ran][1] = this.data[l][1];
+    // this.data[l][1] = temp;
+    // this.redLine(this.data[ran]);
+    // this.redLine(this.data[l]);
+    //#endregion
 
-    this.data[ran][1] = this.data[l][1];
-    this.data[l][1] = temp;
-    this.redLine(this.data[ran]);
-    this.redLine(this.data[l]);
     let pivot_value = this.data[l][1];
     let i = l - 1,
         j = r + 1;
 
     for (;;) {
-      await sleep();
+      if (!this.status) return -1;
+      await this.sleep();
 
       if (!con_i) {
         i++;
@@ -628,15 +599,12 @@ Method.prototype["Quick Sort".toLowerCase()] = function () {
     }
   };
 
-  (async () => {
-    await quickSort(0, this.data.length - 1);
-    this.end_sort(); //End Timer
-
-    const end = new Date().getTime();
-    console.log("End: ".concat(end));
-    console.log("Time taken: ".concat(end - start, "ms")); //Time taken
-  })();
-}; //  ______OLD_______
+  let t = (await quickSort(0, this.data.length - 1)) || 1;
+  this.showData();
+  if (t === -1) return;
+  this.end_sort();
+}; //#endregion
+//#region ______OLD_____
 //Merge sort algorithm
 // let queue = [];
 // (function merge_index(l,r){
@@ -697,8 +665,9 @@ Method.prototype["Quick Sort".toLowerCase()] = function () {
 // 		this.redLine(this.data[l + l1 + l2]);
 // 		con ? l2++ : l1++;
 // 		}
-// } 
+// }
 // main();
+//#endregion
 },{}],"JS/Sorting.js":[function(require,module,exports) {
 "use strict";
 
@@ -724,9 +693,9 @@ for (let i of method.description) {
 
   tag.value = i.toLowerCase();
   current_opt.appendChild(tag);
-}
+} // const eve = new Event("method_changed")
 
-const eve = new Event("method_changed");
+
 let wrap = document.querySelector(".option-wrap");
 let l = current_opt.length;
 let cur_select = document.createElement("DIV");
@@ -749,8 +718,10 @@ for (let i = 0; i < l; i++) {
   select_items[i].innerHTML = current_opt[i].innerHTML;
   select_items[i].addEventListener("click", () => {
     cur_select.firstChild.data = select_items[i].innerHTML;
-    cur_select.setAttribute("value", select_items[i].innerHTML.toLowerCase());
-    cur_select.dispatchEvent(eve);
+    cur_select.setAttribute("value", select_items[i].innerHTML.toLowerCase()); // cur_select.dispatchEvent(eve);
+
+    method.status = 0;
+    method.callBack();
   });
   select_list.appendChild(select_items[i]);
 }
@@ -787,8 +758,8 @@ method.callBack = function () {
   start_btn.lastChild.data = " START";
 };
 
-window.addEventListener("resize", setup);
-cur_select.addEventListener("method_changed", change_method, false);
+window.addEventListener("resize", setup); // cur_select.addEventListener("method_changed", change_method, false);
+
 num_ip.addEventListener("change", () => {
   stop_sort();
   method.num = parseInt(num_ip.value);
@@ -808,27 +779,38 @@ function setup() {
   method.c_height = canvas.height;
   method.c_width = canvas.width;
   method.setRandomData();
-  method.updatePara();
+
+  for (var i = 0, l = method.data.length; i !== l; i++) {
+    method.col_w = method.c_width / method.num;
+    method.data[i][0] = i * method.col_w;
+  }
+
   method.set_fill();
   method.showData();
 }
 
 setup(); //#endregion
+// // let fn = '';
+// function change_method() {
+// 	method.status = 0;
+// 	method.callBack();
+// 	// fn = `method["${cur_select.getAttribute("value").toLowerCase()}"]()`;
+// }
+// change_method();
 
-let fn = '';
-
-function change_method() {
-  method.status = 0;
-  method.callBack();
-  fn = "method[\"".concat(cur_select.getAttribute("value").toLowerCase(), "\"]()");
-}
-
-change_method();
-
-function start_sort() {
+async function start_sort() {
   if (method.num >= +num_ip.min) {
-    cancelAnimationFrame(method.req);
-    method[cur_select.getAttribute("value").toLowerCase()]();
+    var _method$cur_select$ge;
+
+    console.clear(); //Start Timer
+
+    const start = new Date().getTime();
+    console.log("Start: ".concat(start));
+    await ((_method$cur_select$ge = method[cur_select.getAttribute("value").toLowerCase()]) === null || _method$cur_select$ge === void 0 ? void 0 : _method$cur_select$ge.call(method)); //End Timer
+
+    const end = new Date().getTime();
+    console.log("End: ".concat(end));
+    console.log("Time taken: ".concat(end - start, "ms")); //Time taken
   } // start_btn.removeEventListener("click", start_sort);
   // method.Isort();
   // start_btn.addEventListener("click", start_sort);
@@ -836,7 +818,6 @@ function start_sort() {
 }
 
 function stop_sort() {
-  cancelAnimationFrame(method.req);
   method.status = 0;
   method.callBack();
 }
@@ -868,7 +849,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52787" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49658" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
