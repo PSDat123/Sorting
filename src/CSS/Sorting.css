@@ -126,7 +126,7 @@ canvas{
 	transition: background 400ms ease-in, color 400ms ease-out;
 	border: 2px solid whitesmoke;
 	/* border-color: whitesmoke whitesmoke transparent whitesmoke; */
-	
+	min-width: 10vw;
 }
 .current-select:hover, .active{
 	background: black;
