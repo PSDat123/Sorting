@@ -40,34 +40,43 @@ canvas{
 	letter-spacing: 1px;
 	/* float: left; */
 }
-.start{
+.btn{
 	background: whitesmoke;
 	border: none;
 	flex-shrink: 1;
 
 	font-size: initial;
 	font-weight: bold;
+	text-align: center;
 	padding: 1vh 1vw;
 	margin: 0.5em;
 	display: block;
 	cursor: pointer;
-	/* float: left; */
-	transition: background 100ms ease-in , color 100ms ease-out;
+	
+	transition: background 100ms ease-out , color 100ms ease-out, box-shadow 100ms ease-out ,transform 20ms ease-out;
 }
-.start:hover{
+.btn:hover{
 	background: black;
 	color: white;
 	box-shadow: 0 0 0 4px black;
+	transition: background 100ms ease-in, color 100ms ease-in;
+}
+.btn:active{
+	transform: scale(1.1);
+	/* transition: transform 20ms ease-in; */
 }
 /* .start:active{
 	background: grey;
 	color: black;
 } */
-.start:focus{
+.btn:focus{
 	outline: none;
 	box-shadow: 0 0 0 4px black;
 }
-
+/* .start{
+	min-width: 7vw;
+	max-width: 7vw;
+} */
 
 .ip, .selection{  /*AMOUNT,SELECTIONS */
 	position: relative;

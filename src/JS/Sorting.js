@@ -2,9 +2,13 @@ import Method from "./Methods.js";
 
 let canvas = document.querySelector("canvas");
 let nav_bar = document.querySelector(".nav-bar");
-let start_btn = document.querySelector(".start");
+
 let current_opt = document.querySelector(".selection");
 let num_ip = document.querySelector(".ip");
+
+let start_btn = document.querySelector(".start");
+let ran_btn = document.querySelector(".randomizer");
+let stop_btn = document.querySelector(".stop");
 
 // let num = parseInt(num_ip.value);
 let data = [];
@@ -75,23 +79,23 @@ window.addEventListener("click", (event) => {
 });
 //#endregion
 
+//#region Events
+method.callBack = function () {
+  start_btn.firstChild.classList = "fas fa-play";
+};
 start_btn.addEventListener("click", () => {
   method.status = !method.status;
   // start_btn.innerHTML = method.status ? "Stop" : "Start";
   method.status
     ? (() => {
         start_btn.firstChild.classList = "fas fa-pause";
-        start_btn.lastChild.data = " STOP";
         start_sort();
       })()
     : (() => {
         stop_sort();
       })();
 });
-method.callBack = function () {
-  start_btn.firstChild.classList = "fas fa-play";
-  start_btn.lastChild.data = " START";
-};
+
 window.addEventListener("resize", setup);
 // cur_select.addEventListener("method_changed", change_method, false);
 num_ip.addEventListener("change", () => {
@@ -104,11 +108,23 @@ num_ip.addEventListener("change", () => {
   }
   setup();
 });
+ran_btn.addEventListener("click", async () =>{ 
+  stop_sort();
+  method.shuffle();
+});
+stop_btn.addEventListener("click", stop_sort);
+//#endregion
 
 //#region Setup
 function setup() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight - nav_bar.offsetHeight;
+  canvas.width =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth;
+  canvas.height =
+    window.innerHeight - nav_bar.clientHeight ||
+    document.documentElement.clientHeight - nav_bar.clientHeight ||
+    document.body.clientHeight - nav_bar.clientHeight;
   method.c_height = canvas.height;
   method.c_width = canvas.width;
 

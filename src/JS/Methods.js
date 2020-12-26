@@ -21,6 +21,9 @@ export default class Method {
       .sort();
     this.mode = "column";
   }
+  set_fill(style = "#f0f0f0") {
+    this.c.fillStyle = style;
+  }
   showData() {
     this.c.clearRect(0, 0, this.c_width, this.c_height);
     var a = (this.col_w * this.num) / this.c_width;
@@ -33,47 +36,96 @@ export default class Method {
       );
     }
   }
-  redLine(data_pair, color = "#ff0505") {
+  redLine(color = "#ff0505", ...data_pair) {
     this.set_fill(color);
-    this.c.fillRect(
-      data_pair[0] - this.col_w / (this.c_width / this.num),
-      this.c_height - data_pair[1],
-      this.col_w + this.col_w / (this.c_width / this.num),
-      data_pair[1]
-    );
+    let a = this.col_w / (this.c_width / this.num);
+    for (let i = 0; i < data_pair.length; i++) {
+      this.c.fillRect(
+        data_pair[i][0] - a,
+        this.c_height - data_pair[i][1],
+        this.col_w + a,
+        data_pair[i][1]
+      );
+    }
     this.set_fill();
   }
-  setRandomData() {
+  async sleep() {
+    return new Promise(requestAnimationFrame);
+  }
+
+  callBack() {}
+  //#region Animated Shuffle
+  async shuffle() {
+    this.set_fill();
+    let stime = 12,
+      count = 0;
+    for (let i = 0; i < stime * stime; i++) {
+      await this.sleep();
+      count = 0;
+      for (let j = 0; j < this.data.length; j++) {
+        if (!this.data[j][1]) count++;
+        else this.data[j][1] = ~~(this.data[j][1] * ((stime - 1) / stime));
+      }
+      this.showData();
+      if (count === this.data.length) break;
+    }
+    this.data = [];
+    await this.setRandomData();
+  }
+  async setRandomData() {
+    this.set_fill();
     this.col_w = this.c_width / this.num;
-    let cur_l = this.data.length;
-    if (this.num < cur_l) {
+    let cur_l = this.data.length,
+      min_h = 15,
+      num = this.num;
+    if (num < cur_l) {
       for (let i = 0; i < -this.num + cur_l; i++) {
         this.data.pop();
       }
       return;
     }
-    for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
-      this.data.push([
-        i * this.col_w,
-        ~~(this.c_height - (Math.random() * (this.c_height - 5))),
+    let temp = [];
+    // for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
+    for (let i = 0; i < num - cur_l; i++) {
+      temp.push([
+        cur_l + i,
+        ~~(this.c_height - Math.random() * (this.c_height - min_h)),
+        //cos//~~(this.c_height - (Math.cos(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
+        //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
       ]);
-      //cos//this.data.push([i * this.col_w, (this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 )]);
-      //sin//this.data.push([i * this.col_w, (this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2)]);
+      this.data.push([i * this.col_w, 0]);
+      //cos//~~(this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 ));
+      //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2));
+    }
+    this.anim_data(temp, min_h, cur_l, num);
+  }
+  async anim_data(_temp, _stime, start, end) {
+    let stime = _stime,
+      count = 0,
+      temp = _temp;
+    for (let i = 0; i < stime * stime; i++) {
+      await this.sleep();
+      count = 0;
+      this.showData();
+      for (let j = 0; j < end - start; j++) {
+        if (this.data[start + j][1] >= temp[j][1]) {
+          count++;
+          this.data[start + j][1] = temp[j][1];
+        } else
+          this.data[start + j][1] = ~~(
+            this.data[start + j][1] +
+            temp[j][1] / stime
+          );
+      }
+      if (count === end - start) break;
     }
   }
+  //#endregion
   end_sort() {
-    cancelAnimationFrame(this.req);
     this.c.fillStyle = "#00ff00";
     this.showData();
     this.status = 0;
     this.callBack();
-  }
-  set_fill(style = "#f0f0f0") {
-    this.c.fillStyle = style;
-  }
-  callBack() {}
-  async sleep() {
-    return new Promise(requestAnimationFrame);
   }
 }
 
@@ -91,7 +143,7 @@ Method.prototype["Bubble sort".toLowerCase()] = async function() {
       if (!this.status) return 0;
       await this.sleep();
       this.showData();
-      this.redLine(this.data[i]);
+      this.redLine("#ff0505", this.data[i]);
 
       if (i + 1 < max && this.data[i][1] > this.data[i + 1][1]) {
         temp = this.data[i][1];
@@ -138,7 +190,7 @@ Method.prototype["Comb sort".toLowerCase()] = async function(){
       if (!this.status) return 0;
       await this.sleep()
       this.showData();
-      this.redLine(this.data[i]);
+      this.redLine("#ff0505", this.data[i]);
       if (i + gap <= max && this.data[i][1] > this.data[i + gap][1]) {
         temp = this.data[i][1];
         this.data[i][1] = this.data[i + gap][1];
@@ -150,7 +202,7 @@ Method.prototype["Comb sort".toLowerCase()] = async function(){
       } else {
         count++;
       }
-      this.redLine(this.data[i + gap]);
+      this.redLine("#ff0505", this.data[i + gap]);
       i++;
       if (i + gap > max) {
         i = 0;
@@ -186,7 +238,7 @@ Method.prototype["Insertion sort".toLowerCase()] = async function () {
       if (!this.status) return 0;
       await this.sleep();
       this.showData();
-      this.redLine(this.data[i - 1]);
+      this.redLine("#ff0505", this.data[i - 1]);
       i--;
       if (i - 1 >= 0 && this.data[i][1] < this.data[i - 1][1]) {
         temp = this.data[i][1];
@@ -230,19 +282,30 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
     let L = this.data.slice(l, m + 1);
     let R = this.data.slice(m + 1, r + 1);
     let il = L.length + R.length;
+    let temp_arr = [];
     for (let dl = 0, dr = 0; dl + dr < il; dl++, dr++) {
       if (!this.status) return -1;
       await this.sleep();
       this.showData();
       if (R[dr]?.[1] === undefined || L[dl]?.[1] < R[dr]?.[1]) {
-        this.data[dl + dr + l] = [this.data[dl + dr + l][0], L[dl][1]];
-        this.redLine(this.data[dl + dr + l]);
+        temp_arr.push(L[dl][1]);
+        this.redLine("#ff0505", this.data[dl + l], this.data[m + dr]);
         dr--;
       } else {
-        this.data[dl + dr + l] = [this.data[dl + dr + l][0], R[dr][1]];
-        this.redLine(this.data[dl + dr + l]);
+        temp_arr.push(R[dr][1]);
+        // this.data[dl + dr + l] = [this.data[dl + dr + l][0], R[dr][1]];
+        this.redLine("#ff0505", this.data[dl + l], this.data[m + dr]);
         dl--;
       }
+      
+    }
+    for (let i = 0; i < temp_arr.length; i++) {
+      if (!this.status) return -1;
+      
+      this.data[l + i][1] = temp_arr[i];
+      this.showData();
+      this.redLine("#ff0505", this.data[l + i]);
+      await this.sleep();
     }
   };
   let t = await merge_sort(0, this.data.length - 1) || 1;
@@ -282,7 +345,7 @@ Method.prototype["Shell sort".toLowerCase()] = async function () {
         temp_index = i;
       }
       this.showData();
-      this.redLine(this.data[temp_index - gap * (temp_index >= gap)]);
+      this.redLine("#ff0505", this.data[temp_index - gap * (temp_index >= gap)]);
       if (i >= max) {
         gap = ~~(gap / 2);
         i = gap;
@@ -306,7 +369,7 @@ Method.prototype["Shell sort".toLowerCase()] = async function () {
           return 1;
         }
       }
-      this.redLine(this.data[i]);
+      this.redLine("#ff0505", this.data[i]);
     }
   }
   let t = await main();
@@ -332,7 +395,7 @@ Method.prototype["Cocktail sort".toLowerCase()] = async function () {
       if (!this.status) return 0;
       await this.sleep();
       this.showData();
-      this.redLine(this.data[i]);
+      this.redLine("#ff0505", this.data[i]);
 
       if (min <= i + inc && i + inc <= max) {
         if (
@@ -395,8 +458,8 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
   // 	for(j = l; j < r; j++){
   // 		await this.sleep();
   // 		this.showData();
-  // 		this.redLine(this.data[i]);
-  // 		this.redLine(this.data[j]);
+  // 		this.redLine("#ff0505", this.data[i]);
+  // 		this.redLine("#ff0505", this.data[j]);
   // 		if(this.data[j][1] <= pivot_value){
   // 			temp = this.data[i][1]; //swap
   // 			this.data[i][1] = this.data[j][1];
@@ -415,15 +478,14 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
     let con_i = 0,
       con_j = 0;
     //#region --Random pivot--
-    // var ran = Math.floor(Math.random() * (r - l + 1) + l);
+    var ran = ~~((r + l) / 2);
     // temp = this.data[ran][1]; //swap
     // this.data[ran][1] = this.data[l][1];
     // this.data[l][1] = temp;
 
-    // this.redLine(this.data[ran]);
-    // this.redLine(this.data[l]);
+    
     //#endregion
-    let pivot_value = this.data[l][1];
+    let pivot_value = this.data[ran][1];
     let i = l - 1,
       j = r + 1;
 
@@ -443,14 +505,15 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
         }
       }
       this.showData();
-      this.redLine(this.data[i]);
-      this.redLine(this.data[j - 1 * !con_i]);
-
+      this.redLine("#68f571", this.data[ran]);
+      this.redLine("#ff0505", this.data[i], this.data[j - 1 * !con_i]);
       if (con_i && con_j) {
         if (i >= j) return j;
         else {
           con_i = 0;
           con_j = 0;
+          if(i === ran) ran = j;
+          else if(j === ran) ran = i;
           temp = this.data[i][1]; //swap
           this.data[i][1] = this.data[j][1];
           this.data[j][1] = temp;
@@ -458,9 +521,9 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
       }
     }
   };
-  let t = await quickSort(0, this.data.length - 1) || 1;
+  let t = (await quickSort(0, this.data.length - 1)) || 1;
   this.showData();
-  if(t === -1) return;
+  if (t === -1) return;
   this.end_sort();
 };
 //#endregion
