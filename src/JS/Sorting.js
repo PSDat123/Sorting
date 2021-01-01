@@ -142,7 +142,7 @@ function setup() {
   method.set_fill();
   method.showData();
 }
-setup();
+document.addEventListener("DOMContentLoaded", setup);
 //#endregion
 
 // // let fn = '';

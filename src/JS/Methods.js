@@ -4,7 +4,6 @@ export default class Method {
   constructor(num, data, canvas) {
     this.c = canvas.getContext("2d", { alpha: false });
     this.data = data;
-    this.color_data = []; //0-Red 1-White
     this.c_height = canvas.height;
     this.c_width = canvas.width;
     this.num = num;
@@ -25,25 +24,27 @@ export default class Method {
     this.c.fillStyle = style;
   }
   showData() {
-    // var a = (this.col_w * this.num) / this.c_width;
-    // console.log(a);   
+    let h = this.c_height,
+      cw = ~~this.col_w + 1;
     this.c.clearRect(0, 0, this.c_width, this.c_height);
-    for (let i = 0, l = this.data.length; i !== l; i++) {
+    for (let i = this.data.length; i--;) {
       this.c.fillRect(
         this.data[i][0] - 1,
-        this.c_height - this.data[i][1],
-        ~~this.col_w + 1,
+        h - this.data[i][1],
+        cw,
         this.data[i][1]
       );
     }
   }
   redLine(color = "#ff0505", ...data_pair) {
     this.set_fill(color);
-    for (let i = 0; i < data_pair.length; i++)
+    let h = this.c_height,
+      cw = ~~this.col_w + 1;
+    for (let i = data_pair.length; i--;)
       this.c.fillRect(
         data_pair[i][0] - 1,
-        this.c_height - data_pair[i][1],
-        ~~this.col_w + 1,
+        h - data_pair[i][1],
+        cw,
         data_pair[i][1]
       );
     this.set_fill();
@@ -81,15 +82,14 @@ export default class Method {
       min_h = 5,
       num = this.num;
     if (num < cur_l) {
-      for (let i = 0; i < -this.num + cur_l; i++) {
+      for (let i =  cur_l - this.num ; i--;) {
         this.data.pop();
-        this.color_data.pop();
       }
       return;
     }
     let temp = [];
     // for (let i = 0; i < this.num - cur_l * (this.num >= cur_l); i++) {
-    for (let i = 0; i < num - cur_l; i++) {
+    for (let i = 0, a = num - cur_l; i < a; i++) {
       temp.push([
         cur_l + i,
         ~~(Math.random() * (this.c_height - 5)) + min_h,
@@ -97,7 +97,6 @@ export default class Method {
         //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
       ]);
       this.data.push([~~(i * this.col_w), 0]);
-      this.color_data.push(1);
     }
     await this.anim_data(temp, 12, cur_l, num);
   }
@@ -155,12 +154,12 @@ Method.prototype["Bubble sort".toLowerCase()] = async function () {
         count++;
       }
 
-      if (count >= max) {
+      if (count === max) {
         return 1;
       }
       i++;
 
-      if (i >= max) {
+      if (i === max) {
         max -= count;
         count = 0;
         i = 0;
@@ -169,8 +168,10 @@ Method.prototype["Bubble sort".toLowerCase()] = async function () {
     }
   };
   let t = await main();
-  this.showData();
-  if (!t) return;
+  if (!t) {
+    this.showData();
+    return;
+  }
   this.end_sort();
 };
 //#endregion
@@ -534,7 +535,77 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
 //#endregion
 
 //#region Radix Sort
-Method.prototype["Radix Sort".toLowerCase()] = async function () {};
+Method.prototype["Radix Sort".toLowerCase()] = async function () {
+   this.set_fill();
+   this.status = 1;
+
+  let num_len = ~~Math.log10(this.c_height) + 1;
+
+  let count_sort = async (n) => {
+    let range = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      temp_arr = [];
+    for (let i = 0; i < this.data.length; i++) {
+      range[~~((this.data[i][1] % 10 ** n) / 10 ** (n - 1))]++;
+      await this.sleep();
+      this.showData();
+      this.redLine("#ff0505", this.data[i]);
+      // await here
+    }
+    for (let i = 1; i < range.length; i++) {
+      range[i] += range[i - 1];
+      // await this.sleep();
+    }
+    range.unshift(0);
+    range.pop();
+
+    let bucket = [],
+      bucket_len = [];
+    for (let i = 0, l = range.length ; i !== l ; i++) {
+      bucket.push(range[i]);
+      if(range[i] < this.num)this.redLine("#ff0505", this.data[range[i]]);
+      if(i !== 0){
+        if(i === l - 1){
+          bucket_len[i] = this.num - bucket[i];
+        }
+        bucket_len[i - 1] = bucket[i] - bucket[i - 1];
+      }
+    }
+
+    for (let i = 0, l = this.data.length; i !== l; i++){
+      let t = ~~((this.data[i][1] % 10 ** n) / 10 ** (n - 1));
+      temp_arr[range[t]] = this.data[i][1];
+      
+      range[t]++;
+    }
+    for(;;){
+      await this.sleep();
+      let _n = 0;
+      this.showData();
+      for (let i = 0, l = bucket.length; i !== l; i++) {
+        if(bucket_len[i]){
+          this.data[bucket[i]][1] = temp_arr[bucket[i]];
+          this.redLine("#ff0505", this.data[bucket[i]]);
+          bucket[i]++; 
+          bucket_len[i]--;
+          _n++;
+        }
+      }
+      
+      if(!_n) break;
+    }
+  };
+
+  let main = async () => {
+    for (let n = 1; n <= num_len; n++) {
+      await count_sort(n);
+    }
+    return 1;
+  }
+  let t = await main();
+  this.showData();
+  if (!t) return;
+  this.end_sort();
+};
 
 //#endregion
 
