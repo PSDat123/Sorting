@@ -11,33 +11,37 @@
     <title>Sorting Algorithms</title>
     <link rel="icon" href="ICONS/fav_icon.ico" />
     <link rel="stylesheet" href="ICONS/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="CSS/Sorting.css" />
+    <link rel="stylesheet" href="CSS/Sorting.css" />
   </head>
   <body>
     <nav>
       <div class="nav-bar">
-        <a class="page-name" href="index.html">SORTING ALGORITHMS</a>
-        <form id="form">
-          <div class="option-wrap">
-            <select class="selection"></select>
-          </div>
-        </form>
-        <label for="num" id="ip-name">AMOUNT:</label>
-        <input
-          type="number"
-          class="ip"
-          name="num"
-          value="128"
-          min="2"
-          max="10000"
-          step="1"
-        />
-        <button class="btn stop"><i class="fas fa-stop"></i></button>
-        <button class="btn start"><i class="fas fa-play"></i></button>
-        <button class="btn randomizer"><i class="fas fa-random"></i></button>
+        <div>
+          <a class="page-name" href="index.html">SORTING ALGORITHMS</a>
+        </div>
+        <div class="nav-items">
+          <form>
+            <div class="option-wrap">
+              <select class="selection"></select>
+            </div>
+          </form>
+          <label for="num" id="ip-name">AMOUNT:</label>
+          <input
+            type="number"
+            class="ip"
+            name="num"
+            value="128"
+            min="2"
+            max="10000"
+            step="1"
+          />
+          <button class="btn stop"><i class="fas fa-stop"></i></button>
+          <button class="btn start"><i class="fas fa-play"></i></button>
+          <button class="btn randomizer"><i class="fas fa-random"></i></button>
+        </div>
       </div>
     </nav>
-    <canvas></canvas>
-    <script src="./JS/Sorting.js" defer></script>
+    <canvas class="main-canvas"></canvas>
   </body>
+  <script src="./JS/Sorting.js" defer></script>
 </html>

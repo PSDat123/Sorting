@@ -10,13 +10,6 @@ a{
 	
 }
 
-canvas{
-	border: 2px solid black;
-	background: black;
-	width: 100%;
-	height: 100%;
-}
-
 .nav-bar{
 	display: flex;
 	flex-direction: row;
@@ -28,6 +21,11 @@ canvas{
 	/* box-shadow: 0 5px 3px 0.1em whitesmoke; */
 	/* overflow: auto; */
 
+}
+.nav-items{
+	display: flex;
+	justify-content: left;
+	align-items: center;
 }
 .page-name{  /*SORTING ALGORITHMS*/
 	display: block;
@@ -91,8 +89,26 @@ canvas{
 }
 .ip{ /*AMOUNT*/
 	width: 6vw;
-	padding: 1.5vh 1.5vw;
+	padding: 1vh 1vw;
 	margin-left: 0.1em;
+	border-radius: 5px;
+	/* border-width: 0.2em;  */
+	border-width: 0.5ch;
+	background:whitesmoke;
+	color: black;
+	font-size: initial;
+	font-weight: bold;
+	outline: none;
+	transition: background 300ms ease-out, color 300ms ease-out;
+}
+.ip:hover{
+	background: black;
+	color: whitesmoke;
+}
+.ip:focus{
+	background: black;
+	color: whitesmoke;
+	box-shadow: 0 0 6px 1px gray;
 }
 #ip-name{ /*AMMOUNT NAME*/
 	padding: 1vh 1vw;
@@ -132,7 +148,7 @@ canvas{
 	padding: 1vh 2.75vw 1vh 1vw;
 	cursor: pointer;
 	user-select: none;
-	transition: background 400ms ease-in, color 400ms ease-out;
+	transition: background 300ms ease-in, color 300ms ease-out;
 	border: 2px solid whitesmoke;
 	/* border-color: whitesmoke whitesmoke transparent whitesmoke; */
 	min-width: 10vw;
@@ -167,3 +183,14 @@ canvas{
 .choices:hover{
 	background: gray;
 }
+
+.main-canvas{
+	border: 2px solid black;
+	background: black;
+	/* width: 100%;
+	height: 100%; */
+}
+/* .sub-canvas{
+	background: transparent;
+	z-index: 10;
+} */

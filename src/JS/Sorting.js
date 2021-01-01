@@ -1,6 +1,6 @@
 import Method from "./Methods.js";
 
-let canvas = document.querySelector("canvas");
+let main_canvas = document.querySelector(".main-canvas");
 let nav_bar = document.querySelector(".nav-bar");
 
 let current_opt = document.querySelector(".selection");
@@ -13,9 +13,9 @@ let stop_btn = document.querySelector(".stop");
 // let num = parseInt(num_ip.value);
 let data = [];
 
-let method = new Method(parseInt(num_ip.value), data, canvas);
+let method = new Method(parseInt(num_ip.value), data, main_canvas);
 let default_num = parseInt(num_ip.value);
-
+let ran_con = 0;
 //#region Custom Selection
 for (let i of method.description) {
   let tag = document.createElement("OPTION");
@@ -84,7 +84,7 @@ method.callBack = function () {
   start_btn.firstChild.classList = "fas fa-play";
 };
 start_btn.addEventListener("click", () => {
-  method.status = !method.status;
+  if(!ran_con) method.status = !method.status;
   // start_btn.innerHTML = method.status ? "Stop" : "Start";
   method.status
     ? (() => {
@@ -101,39 +101,44 @@ window.addEventListener("resize", setup);
 num_ip.addEventListener("change", () => {
   stop_sort();
   method.num = parseInt(num_ip.value);
-  if (method.num < +num_ip.min || method.num > +num_ip.max) {
+  if (method.num < +num_ip.min || method.num > +num_ip.max || !num_ip.value) {
     num_ip.value = default_num;
     method.num = default_num;
     alert("Invalid number (Too high or too low)");
   }
   setup();
 });
+
 ran_btn.addEventListener("click", async () =>{ 
   stop_sort();
-  method.shuffle();
+  if(!ran_con){
+    ran_con = 1;
+    num_ip.disabled = true;
+    await method.shuffle();
+    ran_con = 0;
+    num_ip.disabled = false;
+  }
 });
 stop_btn.addEventListener("click", stop_sort);
 //#endregion
 
 //#region Setup
 function setup() {
-  canvas.width =
+  main_canvas.width =
     window.innerWidth ||
     document.documentElement.clientWidth ||
     document.body.clientWidth;
-  canvas.height =
+  main_canvas.height =
     window.innerHeight - nav_bar.clientHeight ||
     document.documentElement.clientHeight - nav_bar.clientHeight ||
     document.body.clientHeight - nav_bar.clientHeight;
-  method.c_height = canvas.height;
-  method.c_width = canvas.width;
+  method.c_height = main_canvas.height;
+  method.c_width = main_canvas.width;
 
   method.setRandomData();
   for (var i = 0, l = method.data.length; i !== l; i++) {
-    method.col_w = method.c_width / method.num;
-    method.data[i][0] = i * method.col_w;
+    method.data[i][0] = ~~(i * method.col_w);
   }
-
   method.set_fill();
   method.showData();
 }

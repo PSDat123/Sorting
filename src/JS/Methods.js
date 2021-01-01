@@ -2,14 +2,14 @@
 
 export default class Method {
   constructor(num, data, canvas) {
-    this.c = canvas.getContext("2d");
+    this.c = canvas.getContext("2d", { alpha: false });
     this.data = data;
+    this.color_data = []; //0-Red 1-White
     this.c_height = canvas.height;
     this.c_width = canvas.width;
     this.num = num;
     this.col_w = this.c_width / this.num;
     this.status = 0;
-    this.req = 0;
     this.speed = 1;
     this.description = Object.keys(Method.prototype)
       .map((s) =>
@@ -25,28 +25,27 @@ export default class Method {
     this.c.fillStyle = style;
   }
   showData() {
+    // var a = (this.col_w * this.num) / this.c_width;
+    // console.log(a);   
     this.c.clearRect(0, 0, this.c_width, this.c_height);
-    var a = (this.col_w * this.num) / this.c_width;
-    for (var i = 0, l = this.data.length; i !== l; i++) {
+    for (let i = 0, l = this.data.length; i !== l; i++) {
       this.c.fillRect(
-        this.data[i][0] - a,
+        this.data[i][0] - 1,
         this.c_height - this.data[i][1],
-        this.col_w + a,
+        ~~this.col_w + 1,
         this.data[i][1]
       );
     }
   }
   redLine(color = "#ff0505", ...data_pair) {
     this.set_fill(color);
-    let a = this.col_w / (this.c_width / this.num);
-    for (let i = 0; i < data_pair.length; i++) {
+    for (let i = 0; i < data_pair.length; i++)
       this.c.fillRect(
-        data_pair[i][0] - a,
+        data_pair[i][0] - 1,
         this.c_height - data_pair[i][1],
-        this.col_w + a,
+        ~~this.col_w + 1,
         data_pair[i][1]
       );
-    }
     this.set_fill();
   }
   async sleep() {
@@ -54,17 +53,20 @@ export default class Method {
   }
 
   callBack() {}
+
   //#region Animated Shuffle
   async shuffle() {
     this.set_fill();
-    let stime = 12,
+    let stime = 10,
       count = 0;
     for (let i = 0; i < stime * stime; i++) {
       await this.sleep();
       count = 0;
       for (let j = 0; j < this.data.length; j++) {
-        if (!this.data[j][1]) count++;
-        else this.data[j][1] = ~~(this.data[j][1] * ((stime - 1) / stime));
+        if (this.data[j][1] <= 1) {
+          count++;
+          this.data[j][1] = 0;
+        } else this.data[j][1] -= this.data[j][1] / stime;
       }
       this.showData();
       if (count === this.data.length) break;
@@ -76,11 +78,12 @@ export default class Method {
     this.set_fill();
     this.col_w = this.c_width / this.num;
     let cur_l = this.data.length,
-      min_h = 15,
+      min_h = 5,
       num = this.num;
     if (num < cur_l) {
       for (let i = 0; i < -this.num + cur_l; i++) {
         this.data.pop();
+        this.color_data.pop();
       }
       return;
     }
@@ -89,15 +92,14 @@ export default class Method {
     for (let i = 0; i < num - cur_l; i++) {
       temp.push([
         cur_l + i,
-        ~~(this.c_height - Math.random() * (this.c_height - min_h)),
+        ~~(Math.random() * (this.c_height - 5)) + min_h,
         //cos//~~(this.c_height - (Math.cos(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
         //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
       ]);
-      this.data.push([i * this.col_w, 0]);
-      //cos//~~(this.c_height - (Math.cos(this.data.length / 10) + 1) * this.c_height/2 ));
-      //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * this.c_height / 2));
+      this.data.push([~~(i * this.col_w), 0]);
+      this.color_data.push(1);
     }
-    this.anim_data(temp, min_h, cur_l, num);
+    await this.anim_data(temp, 12, cur_l, num);
   }
   async anim_data(_temp, _stime, start, end) {
     let stime = _stime,
@@ -112,13 +114,12 @@ export default class Method {
           count++;
           this.data[start + j][1] = temp[j][1];
         } else
-          this.data[start + j][1] = ~~(
-            this.data[start + j][1] +
-            temp[j][1] / stime
-          );
+          this.data[start + j][1] =
+            this.data[start + j][1] + temp[j][1] / stime;
       }
       if (count === end - start) break;
     }
+    this.showData();
   }
   //#endregion
   end_sort() {
@@ -130,7 +131,7 @@ export default class Method {
 }
 
 //#region Bubble Sort
-Method.prototype["Bubble sort".toLowerCase()] = async function() {
+Method.prototype["Bubble sort".toLowerCase()] = async function () {
   this.set_fill();
   this.status = 1;
 
@@ -140,11 +141,10 @@ Method.prototype["Bubble sort".toLowerCase()] = async function() {
     temp = 0;
   let main = async () => {
     for (;;) {
-      if (!this.status) return 0;
       await this.sleep();
+      if (!this.status) return 0;
       this.showData();
       this.redLine("#ff0505", this.data[i]);
-
       if (i + 1 < max && this.data[i][1] > this.data[i + 1][1]) {
         temp = this.data[i][1];
         this.data[i][1] = this.data[i + 1][1];
@@ -154,31 +154,34 @@ Method.prototype["Bubble sort".toLowerCase()] = async function() {
       } else {
         count++;
       }
+
       if (count >= max) {
         return 1;
       }
       i++;
+
       if (i >= max) {
         max -= count;
         count = 0;
         i = 0;
       }
+      
     }
   };
   let t = await main();
   this.showData();
-  if(!t) return;
-  this.end_sort()
+  if (!t) return;
+  this.end_sort();
 };
 //#endregion
 
 //#region Comb Sort
-Method.prototype["Comb sort".toLowerCase()] = async function(){
+Method.prototype["Comb sort".toLowerCase()] = async function () {
   this.set_fill();
   this.status = 1;
 
   let max = this.data.length - 1,
-    gap = ~~((this.data.length * 10) / 13), 
+    gap = ~~((this.data.length * 10) / 13),
     i = 0,
     temp = 0,
     count = 0,
@@ -187,8 +190,8 @@ Method.prototype["Comb sort".toLowerCase()] = async function(){
 
   let main = async () => {
     for (;;) {
+      await this.sleep();
       if (!this.status) return 0;
-      await this.sleep()
       this.showData();
       this.redLine("#ff0505", this.data[i]);
       if (i + gap <= max && this.data[i][1] > this.data[i + gap][1]) {
@@ -196,13 +199,14 @@ Method.prototype["Comb sort".toLowerCase()] = async function(){
         this.data[i][1] = this.data[i + gap][1];
         this.data[i + gap][1] = temp;
         // [this.data[i][1], this.data[i+1][1]] = [this.data[i+1][1], this.data[i][1]];
+
         if (con) gap = pgap;
         con = 0;
         count = 0;
       } else {
         count++;
       }
-      this.redLine("#ff0505", this.data[i + gap]);
+      if (i + gap <= max) this.redLine("#ff0505", this.data[i + gap]);
       i++;
       if (i + gap > max) {
         i = 0;
@@ -234,9 +238,9 @@ Method.prototype["Insertion sort".toLowerCase()] = async function () {
     i = max + 1,
     temp = 0;
   let main = async () => {
-    for(;;){
-      if (!this.status) return 0;
+    for (;;) {
       await this.sleep();
+      if (!this.status) return 0;
       this.showData();
       this.redLine("#ff0505", this.data[i - 1]);
       i--;
@@ -250,14 +254,14 @@ Method.prototype["Insertion sort".toLowerCase()] = async function () {
         i = max + 1;
         // count = 0;
       }
-      if (max >= this.num) {      
+      if (max >= this.num) {
         return 1;
       }
     }
   };
   let t = await main();
   this.showData();
-  if(!t) return;
+  if (!t) return;
   this.end_sort();
 };
 //#endregion
@@ -276,7 +280,7 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
       await merge(l, m, r);
     }
     if (!this.status) return -1;
-  }
+  };
 
   let merge = async (l, m, r) => {
     let L = this.data.slice(l, m + 1);
@@ -284,8 +288,8 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
     let il = L.length + R.length;
     let temp_arr = [];
     for (let dl = 0, dr = 0; dl + dr < il; dl++, dr++) {
-      if (!this.status) return -1;
       await this.sleep();
+      if (!this.status) return -1;
       this.showData();
       if (R[dr]?.[1] === undefined || L[dl]?.[1] < R[dr]?.[1]) {
         temp_arr.push(L[dl][1]);
@@ -297,20 +301,19 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
         this.redLine("#ff0505", this.data[dl + l], this.data[m + dr]);
         dl--;
       }
-      
     }
     for (let i = 0; i < temp_arr.length; i++) {
       if (!this.status) return -1;
-      
+
       this.data[l + i][1] = temp_arr[i];
       this.showData();
       this.redLine("#ff0505", this.data[l + i]);
       await this.sleep();
     }
   };
-  let t = await merge_sort(0, this.data.length - 1) || 1;
+  let t = (await merge_sort(0, this.data.length - 1)) || 1;
   this.showData();
-  if(t === -1) return;
+  if (t === -1) return;
   this.end_sort();
 };
 //#endregion
@@ -318,7 +321,7 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
 //#region Shell Sort
 Method.prototype["Shell sort".toLowerCase()] = async function () {
   this.set_fill();
-  this.status = 1; 
+  this.status = 1;
   let max = this.data.length,
     gap = ~~(this.data.length / 2),
     i = gap,
@@ -326,8 +329,8 @@ Method.prototype["Shell sort".toLowerCase()] = async function () {
     temp = 0;
   let main = async () => {
     for (;;) {
-      if (!this.status) return 0;
       await this.sleep();
+      if (!this.status) return 0;
       if (
         temp_index - gap >= 0 &&
         this.data[temp_index][1] < this.data[temp_index - gap][1]
@@ -345,7 +348,10 @@ Method.prototype["Shell sort".toLowerCase()] = async function () {
         temp_index = i;
       }
       this.showData();
-      this.redLine("#ff0505", this.data[temp_index - gap * (temp_index >= gap)]);
+      this.redLine(
+        "#ff0505",
+        this.data[temp_index - gap * (temp_index >= gap)]
+      );
       if (i >= max) {
         gap = ~~(gap / 2);
         i = gap;
@@ -371,10 +377,10 @@ Method.prototype["Shell sort".toLowerCase()] = async function () {
       }
       this.redLine("#ff0505", this.data[i]);
     }
-  }
+  };
   let t = await main();
   this.showData();
-  if(!t) return;
+  if (!t) return;
   this.end_sort();
 };
 //#endregion
@@ -391,9 +397,9 @@ Method.prototype["Cocktail sort".toLowerCase()] = async function () {
     temp = 0,
     count = 0;
   let main = async () => {
-    for(;;){
-      if (!this.status) return 0;
+    for (;;) {
       await this.sleep();
+      if (!this.status) return 0;
       this.showData();
       this.redLine("#ff0505", this.data[i]);
 
@@ -428,7 +434,7 @@ Method.prototype["Cocktail sort".toLowerCase()] = async function () {
 
   let t = await main();
   this.showData();
-  if(!t) return;
+  if (!t) return;
   this.end_sort();
 };
 //#endregion
@@ -483,15 +489,14 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
     // this.data[ran][1] = this.data[l][1];
     // this.data[l][1] = temp;
 
-    
     //#endregion
     let pivot_value = this.data[ran][1];
     let i = l - 1,
       j = r + 1;
 
     for (;;) {
-      if (!this.status) return -1;
       await this.sleep();
+      if (!this.status) return -1;
       if (!con_i) {
         i++;
         if (this.data[i][1] >= pivot_value) {
@@ -512,8 +517,8 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
         else {
           con_i = 0;
           con_j = 0;
-          if(i === ran) ran = j;
-          else if(j === ran) ran = i;
+          if (i === ran) ran = j;
+          else if (j === ran) ran = i;
           temp = this.data[i][1]; //swap
           this.data[i][1] = this.data[j][1];
           this.data[j][1] = temp;
@@ -526,6 +531,11 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
   if (t === -1) return;
   this.end_sort();
 };
+//#endregion
+
+//#region Radix Sort
+Method.prototype["Radix Sort".toLowerCase()] = async function () {};
+
 //#endregion
 
 //#region ______OLD_____
