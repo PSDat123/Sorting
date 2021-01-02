@@ -273,13 +273,14 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
   this.status = 1;
 
   let merge_sort = async (l, r) => {
+    if (!this.status) return -1;
     if (l < r) {
       var m = ~~(l + (r - l) / 2);
       await merge_sort(l, m);
       await merge_sort(m + 1, r);
 
       await merge(l, m, r);
-    }
+    }  
     if (!this.status) return -1;
   };
 
@@ -304,12 +305,13 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
       }
     }
     for (let i = 0; i < temp_arr.length; i++) {
+      await this.sleep();
       if (!this.status) return -1;
 
       this.data[l + i][1] = temp_arr[i];
       this.showData();
       this.redLine("#ff0505", this.data[l + i]);
-      await this.sleep();
+      
     }
   };
   let t = (await merge_sort(0, this.data.length - 1)) || 1;
@@ -448,6 +450,7 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
   let temp = 0;
 
   let quickSort = async (l, r) => {
+    if (!this.status) return -1;
     if (l < r) {
       let pivot_index = await partition_h(l, r);
       if (pivot_index === -1) return pivot_index;
@@ -545,8 +548,9 @@ Method.prototype["Radix Sort".toLowerCase()] = async function () {
     let range = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       temp_arr = [];
     for (let i = 0; i < this.data.length; i++) {
-      range[~~((this.data[i][1] % 10 ** n) / 10 ** (n - 1))]++;
       await this.sleep();
+      if (!this.status) return 0;
+      range[~~((this.data[i][1] % 10 ** n) / 10 ** (n - 1))]++;
       this.showData();
       this.redLine("#ff0505", this.data[i]);
       // await here
@@ -579,6 +583,7 @@ Method.prototype["Radix Sort".toLowerCase()] = async function () {
     }
     for(;;){
       await this.sleep();
+      if (!this.status) return 0;
       let _n = 0;
       this.showData();
       for (let i = 0, l = bucket.length; i !== l; i++) {
@@ -597,9 +602,10 @@ Method.prototype["Radix Sort".toLowerCase()] = async function () {
 
   let main = async () => {
     for (let n = 1; n <= num_len; n++) {
+      if(!this.status) return 0;
       await count_sort(n);
     }
-    return 1;
+    return this.status ? 1 : 0;
   }
   let t = await main();
   this.showData();

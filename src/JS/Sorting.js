@@ -80,16 +80,21 @@ window.addEventListener("click", (event) => {
 //#endregion
 
 //#region Events
+let idle = 1;
 method.callBack = function () {
   start_btn.firstChild.classList = "fas fa-play";
+  idle = 1;
 };
 start_btn.addEventListener("click", () => {
   if(!ran_con) method.status = !method.status;
   // start_btn.innerHTML = method.status ? "Stop" : "Start";
   method.status
     ? (() => {
+      if(idle === 1){
         start_btn.firstChild.classList = "fas fa-pause";
+        idle = 0;
         start_sort();
+      }
       })()
     : (() => {
         stop_sort();
@@ -166,6 +171,8 @@ async function start_sort() {
     const end = new Date().getTime();
     console.log(`End: ${end}`);
     console.log(`Time taken: ${end - start}ms`); //Time taken
+
+    method.callBack();
   }
   // start_btn.removeEventListener("click", start_sort);
   // method.Isort();
