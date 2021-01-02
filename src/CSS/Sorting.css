@@ -4,6 +4,7 @@ body{
 	height: 100%;
 	overflow: hidden;
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	background: black;
 }
 a{
 	text-decoration: none;
