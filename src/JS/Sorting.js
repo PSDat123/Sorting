@@ -34,6 +34,7 @@ let l = current_opt.length;
 
 let cur_select = document.createElement("DIV");
 cur_select.setAttribute("class", "current-select");
+cur_select.setAttribute("tabindex", 1);
 cur_select.setAttribute("value", current_opt[0].innerHTML.toLowerCase());
 cur_select.innerHTML = current_opt[0].innerHTML;
 
