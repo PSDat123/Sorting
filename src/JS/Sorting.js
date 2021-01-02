@@ -147,7 +147,7 @@ function setup() {
   method.set_fill();
   method.showData();
 }
-document.addEventListener("load", setup);
+window.addEventListener("load", setup);
 //#endregion
 
 // // let fn = '';
