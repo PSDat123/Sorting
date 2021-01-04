@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="A website for visualizing sorting algorithms"
     />
+    <meta
+      name="keywords"
+      content="Sorting, Algorithms, Visualizer, Sorting Algorithms, Sorting Algorithms Visualizer, Sorting Visualizer, Algorithms Visualizer, algorithm, sorting, bubble sort, insertion sort, comb sort, radix sort, shell sort, merge sort, quick sort"
+    />
     <meta name="author" content="PSDat123" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sorting Algorithms</title>
     <link rel="icon" href="ICONS/fav_icon.ico" />
     <link rel="stylesheet" href="ICONS/all.min.css" />
@@ -21,9 +25,7 @@
         </div>
         <div class="nav-items">
           <form>
-            <div class="option-wrap">
-              <select class="selection"></select>
-            </div>
+            <div class="option-wrap"></div>
           </form>
           <label for="num" id="ip-name">AMOUNT:</label>
           <input
@@ -34,10 +36,20 @@
             min="2"
             max="10000"
             step="1"
+            title="Change the amount"
           />
-          <button class="btn stop"><i class="fas fa-stop"></i></button>
-          <button class="btn start"><i class="fas fa-play"></i></button>
-          <button class="btn randomizer"><i class="fas fa-random"></i></button>
+          <button class="btn" id="stop" title="Stop">
+            <i class="fas fa-stop"></i>
+          </button>
+          <button class="btn" id="start" title="Start">
+            <i class="fas fa-play"></i>
+          </button>
+          <button class="btn" id="randomizer" title="Randomize">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="btn" id="shuffle" title="Shuffle">
+            <i class="fas fa-random"></i>
+          </button>
         </div>
       </div>
     </nav>

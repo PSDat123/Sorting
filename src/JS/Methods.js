@@ -1,5 +1,4 @@
 "use strict";
-
 export default class Method {
   constructor(num, data, canvas) {
     this.c = canvas.getContext("2d", { alpha: false });
@@ -20,6 +19,11 @@ export default class Method {
       .sort();
     this.mode = "column";
   }
+  async sleep() {
+    return new Promise(requestAnimationFrame);
+  }
+
+  //#region Drawing to canvas
   set_fill(style = "#f0f0f0") {
     this.c.fillStyle = style;
   }
@@ -27,7 +31,7 @@ export default class Method {
     let h = this.c_height,
       cw = ~~this.col_w + 1;
     this.c.clearRect(0, 0, this.c_width, this.c_height);
-    for (let i = this.data.length; i--;) {
+    for (let i = this.data.length; i--; ) {
       this.c.fillRect(
         this.data[i][0] - 1,
         h - this.data[i][1],
@@ -40,7 +44,7 @@ export default class Method {
     this.set_fill(color);
     let h = this.c_height,
       cw = ~~this.col_w + 1;
-    for (let i = data_pair.length; i--;)
+    for (let i = data_pair.length; i--; )
       this.c.fillRect(
         data_pair[i][0] - 1,
         h - data_pair[i][1],
@@ -49,14 +53,14 @@ export default class Method {
       );
     this.set_fill();
   }
-  async sleep() {
-    return new Promise(requestAnimationFrame);
-  }
+  //#endregion
 
-  callBack() {}
+  //#region Shuffling
+  async shuffle() {}
+  //#endregion
 
-  //#region Animated Shuffle
-  async shuffle() {
+  //#region Animated Randomize
+  async randomize() {
     this.set_fill();
     let stime = 10,
       count = 0;
@@ -82,7 +86,7 @@ export default class Method {
       min_h = 5,
       num = this.num;
     if (num < cur_l) {
-      for (let i =  cur_l - this.num ; i--;) {
+      for (let i = cur_l - this.num; i--; ) {
         this.data.pop();
       }
       return;
@@ -121,6 +125,9 @@ export default class Method {
     this.showData();
   }
   //#endregion
+
+  callBack() {}
+
   end_sort() {
     this.c.fillStyle = "#00ff00";
     this.showData();
@@ -164,7 +171,6 @@ Method.prototype["Bubble sort".toLowerCase()] = async function () {
         count = 0;
         i = 0;
       }
-      
     }
   };
   let t = await main();
@@ -280,7 +286,7 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
       await merge_sort(m + 1, r);
 
       await merge(l, m, r);
-    }  
+    }
     if (!this.status) return -1;
   };
 
@@ -311,7 +317,6 @@ Method.prototype["Merge sort".toLowerCase()] = async function () {
       this.data[l + i][1] = temp_arr[i];
       this.showData();
       this.redLine("#ff0505", this.data[l + i]);
-      
     }
   };
   let t = (await merge_sort(0, this.data.length - 1)) || 1;
@@ -539,8 +544,8 @@ Method.prototype["Quick Sort".toLowerCase()] = async function () {
 
 //#region Radix Sort
 Method.prototype["Radix Sort".toLowerCase()] = async function () {
-   this.set_fill();
-   this.status = 1;
+  this.set_fill();
+  this.status = 1;
 
   let num_len = ~~Math.log10(this.c_height) + 1;
 
@@ -564,49 +569,48 @@ Method.prototype["Radix Sort".toLowerCase()] = async function () {
 
     let bucket = [],
       bucket_len = [];
-    for (let i = 0, l = range.length ; i !== l ; i++) {
+    for (let i = 0, l = range.length; i !== l; i++) {
       bucket.push(range[i]);
-      if(range[i] < this.num)this.redLine("#ff0505", this.data[range[i]]);
-      if(i !== 0){
-        if(i === l - 1){
+      if (range[i] < this.num) this.redLine("#ff0505", this.data[range[i]]);
+      if (i !== 0) {
+        if (i === l - 1) {
           bucket_len[i] = this.num - bucket[i];
         }
         bucket_len[i - 1] = bucket[i] - bucket[i - 1];
       }
     }
 
-    for (let i = 0, l = this.data.length; i !== l; i++){
+    for (let i = 0, l = this.data.length; i !== l; i++) {
       let t = ~~((this.data[i][1] % 10 ** n) / 10 ** (n - 1));
       temp_arr[range[t]] = this.data[i][1];
-      
       range[t]++;
     }
-    for(;;){
+    for (;;) {
       await this.sleep();
       if (!this.status) return 0;
       let _n = 0;
       this.showData();
       for (let i = 0, l = bucket.length; i !== l; i++) {
-        if(bucket_len[i]){
+        if (bucket_len[i]) {
           this.data[bucket[i]][1] = temp_arr[bucket[i]];
           this.redLine("#ff0505", this.data[bucket[i]]);
-          bucket[i]++; 
+          bucket[i]++;
           bucket_len[i]--;
           _n++;
         }
       }
-      
-      if(!_n) break;
+
+      if (!_n) break;
     }
   };
 
   let main = async () => {
     for (let n = 1; n <= num_len; n++) {
-      if(!this.status) return 0;
+      if (!this.status) return 0;
       await count_sort(n);
     }
     return this.status ? 1 : 0;
-  }
+  };
   let t = await main();
   this.showData();
   if (!t) return;
@@ -615,7 +619,7 @@ Method.prototype["Radix Sort".toLowerCase()] = async function () {
 
 //#endregion
 
-//#region ______OLD_____
+//#region ______ARCHIVE_____
 
 //Merge sort algorithm
 // let queue = [];

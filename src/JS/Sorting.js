@@ -3,12 +3,12 @@ import Method from "./Methods.js";
 let main_canvas = document.querySelector(".main-canvas");
 let nav_bar = document.querySelector(".nav-bar");
 
-let current_opt = document.querySelector(".selection");
+let current_opt = document.createElement("select");
 let num_ip = document.querySelector(".ip");
 
-let start_btn = document.querySelector(".start");
-let ran_btn = document.querySelector(".randomizer");
-let stop_btn = document.querySelector(".stop");
+let start_btn = document.querySelector("#start");
+let ran_btn = document.querySelector("#randomizer");
+let stop_btn = document.querySelector("#stop");
 
 // let num = parseInt(num_ip.value);
 let data = [];
@@ -35,6 +35,7 @@ let l = current_opt.length;
 let cur_select = document.createElement("DIV");
 cur_select.setAttribute("class", "current-select");
 cur_select.setAttribute("tabindex", 1);
+cur_select.setAttribute("title", "Choose an algorithm");
 cur_select.setAttribute("value", current_opt[0].innerHTML.toLowerCase());
 cur_select.innerHTML = current_opt[0].innerHTML;
 
@@ -84,18 +85,20 @@ window.addEventListener("click", (event) => {
 let idle = 1;
 method.callBack = function () {
   start_btn.firstChild.classList = "fas fa-play";
+  start_btn.setAttribute("title", "Start");
   idle = 1;
 };
 start_btn.addEventListener("click", () => {
-  if(!ran_con) method.status = !method.status;
+  if (!ran_con) method.status = !method.status;
   // start_btn.innerHTML = method.status ? "Stop" : "Start";
   method.status
     ? (() => {
-      if(idle === 1){
-        start_btn.firstChild.classList = "fas fa-pause";
-        idle = 0;
-        start_sort();
-      }
+        if (idle === 1) {
+          start_btn.firstChild.classList = "fas fa-pause";
+          start_btn.setAttribute("title", "Pause");
+          idle = 0;
+          start_sort();
+        }
       })()
     : (() => {
         stop_sort();
@@ -115,12 +118,12 @@ num_ip.addEventListener("change", () => {
   setup();
 });
 
-ran_btn.addEventListener("click", async () =>{ 
+ran_btn.addEventListener("click", async () => {
   stop_sort();
-  if(!ran_con){
+  if (!ran_con) {
     ran_con = 1;
     num_ip.disabled = true;
-    await method.shuffle();
+    await method.randomize();
     ran_con = 0;
     num_ip.disabled = false;
   }
@@ -160,7 +163,7 @@ window.addEventListener("load", setup);
 // change_method();
 
 async function start_sort() {
-  if (method.num >= +num_ip.min){
+  if (method.num >= +num_ip.min) {
     console.clear();
     //Start Timer
     const start = new Date().getTime();
