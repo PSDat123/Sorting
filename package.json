@@ -29,6 +29,7 @@
     "since 2017-06"
   ],
   "dependencies": {
-    "gh-pages": "^3.1.0"
+    "gh-pages": "^3.1.0",
+    "object-hash": "^2.1.1"
   }
 }

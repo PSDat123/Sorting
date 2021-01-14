@@ -24,6 +24,7 @@ a {
 }
 .nav-items {
   display: flex;
+  flex-wrap: wrap;
   justify-content: left;
   align-items: center;
 }
@@ -69,7 +70,7 @@ a {
   font-size: initial;
 
   padding: 1vh 2.75vw 1vh 1vw;
-  min-width: 8vw;
+  min-width:10vw;
   border: 0.25em solid black;
   border-radius: 5px;
 
@@ -105,6 +106,22 @@ a {
   /* background: whitesmoke; */
   /* color:black; */
   font-size: 1.2em;
+}
+.sub-select-container{
+  position: relative;
+}
+.sub-select{
+  display: block;
+}
+.sub-select-items{
+  background: black;
+  border: 0.1em solid whitesmoke;
+  right: -100%;
+  left: 100%;
+  top: 0;
+  /* transform: translate(100%, 0); */
+  
+  position: absolute;
 }
 /*#endregion */
 
