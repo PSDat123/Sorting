@@ -8,6 +8,7 @@ let num_ip = document.querySelector(".ip");
 let start_btn = document.querySelector("#start");
 let ran_btn = document.querySelector("#randomizer");
 let stop_btn = document.querySelector("#stop");
+let shuffle_btn = document.querySelector("#shuffle");
 
 let visual = new VisualTools.ColumnVisual(parseInt(num_ip.value), main_canvas);
 let default_num = parseInt(num_ip.value);
@@ -20,7 +21,10 @@ let cur_select = document.createElement("DIV");
 cur_select.setAttribute("class", "current-select");
 cur_select.setAttribute("tabindex", 1);
 cur_select.setAttribute("title", "Choose an algorithm");
-cur_select.setAttribute("value", visual.description["Bubble Sort"][0].toLowerCase());
+cur_select.setAttribute(
+  "value",
+  visual.description["Bubble Sort"][0].toLowerCase()
+);
 cur_select.innerHTML = visual.description["Bubble Sort"][0];
 
 let caret = document.createElement("I");
@@ -56,9 +60,12 @@ wrap.appendChild(select_list);
 //#endregion
 
 //#region Events
+let caret_rotated = 0;
 function toggleList() {
   cur_select.classList.toggle("active");
   select_list.classList.toggle("hide-items");
+  caret.style.transform = caret_rotated ? `rotate(0deg)` : `rotate(-180deg)`;
+  caret_rotated = !caret_rotated;
   let sub_select = select_list.querySelectorAll(".sub-select-items");
   for (let i = sub_select.length; i--; )
     if (!sub_select[i].classList.contains("hide-items"))
@@ -70,7 +77,8 @@ for (let i of choices) {
   if (i.classList.contains("sub-select"))
     i.addEventListener("click", () => {
       let sub_select = select_list.querySelectorAll(".sub-select-items");
-      for (let j = sub_select.length; j--; ){
+      
+      for (let j = sub_select.length; j--; ) {
         if (
           !sub_select[j].classList.contains("hide-items") &&
           !sub_select[j].isEqualNode(i.nextSibling)
@@ -117,7 +125,15 @@ start_btn.addEventListener("click", () => {
   }
 });
 
-window.addEventListener("resize", () => setup(0));
+window.addEventListener("resize", () => {
+  if (
+    !(
+      window.outerWidth - window.innerWidth > 100 ||
+      window.outerHeight - window.innerHeight > 200
+    )
+  )
+    setup(0);
+});
 
 num_ip.addEventListener("change", () => {
   stop_sort();
@@ -141,12 +157,13 @@ ran_btn.addEventListener("click", async () => {
   }
 });
 stop_btn.addEventListener("click", () => stop_sort());
+shuffle_btn.addEventListener("click", async () => await visual.shuffle());
 //#endregion
 
 //#region Setup
 function setup(anim = 1) {
   main_canvas.width =
-    window.innerWidth ||
+    window.outerWidth ||
     document.documentElement.clientWidth ||
     document.body.clientWidth;
   main_canvas.height =

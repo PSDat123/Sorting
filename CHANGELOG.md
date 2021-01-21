@@ -1,21 +1,29 @@
+---------------------------------------------- 1/21/2021 ----------------------------------------------
+
+*** Implemented Inplace LSD Radix sort algorithm ***
+
+*** Implemented Fisher-Yates Shuffle ***
+
+*** Minor styling ***
+
 ---------------------------------------------- 1/14/2021 ----------------------------------------------
 
-# Moved all of the sorting algortihm to a separate files.
+*** Moved all of the sorting algortihm to a separate files ***
 
-# Reworked some algorithms
+*** Reworked some algorithms ***
+ 
+*** Improved interativity, more "flex"ible ***
 
-# Improved interativity, more "flex"ible
+*** Improved animations ***
 
-# Improved animations
+*** Minor bug extermination ***
 
-# Minor bug extermination
+*** Un-spaghetti-fied some codes ***
 
-# Un-spaghetti-fied some codes
+*** Automated progress of adding new algorithm ***
 
-# Automated progress of adding new algorithm
+*** Added CHANGELOG.md ***
 
-# Added CHANGELOG.md
+# In-Place LSD Radix Sort && Buttons function in progress
 
-***In-Place LSD Radix Sort && Buttons function in progress***
-
----------------------------------------------- COMING SOON ----------------------------------------------
+--------------------------------------------------------------------------------------------------------

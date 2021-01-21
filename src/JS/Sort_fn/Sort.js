@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 let sortContainer = new Map();
 
 //#region Bubble Sort
@@ -52,7 +52,7 @@ sortContainer.set("Bubble sort".toLowerCase(), {
 sortContainer.set("Comb sort".toLowerCase(), {
   family: "Comb sort",
   name: "Comb sort",
-  sort: async (visual, arr) =>{
+  sort: async (visual, arr) => {
     visual.status = 1;
 
     let max = arr.length - 1,
@@ -104,7 +104,7 @@ sortContainer.set("Comb sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
@@ -112,7 +112,7 @@ sortContainer.set("Comb sort".toLowerCase(), {
 sortContainer.set("Insertion Sort".toLowerCase(), {
   family: "Insertion Sort",
   name: "Insertion Sort",
-  sort: async (visual, arr) => { 
+  sort: async (visual, arr) => {
     visual.status = 1;
 
     let max = 1,
@@ -147,15 +147,15 @@ sortContainer.set("Insertion Sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
 //#region Merge Sort
-sortContainer.set("Merge Sort".toLowerCase(),{
+sortContainer.set("Merge Sort".toLowerCase(), {
   family: "Merge Sort",
   name: "Merge Sort",
-  sort: async (visual, arr) =>{
+  sort: async (visual, arr) => {
     visual.status = 1;
 
     let mergeSort = async (l, r) => {
@@ -199,13 +199,13 @@ sortContainer.set("Merge Sort".toLowerCase(),{
       }
     };
     let t = (await mergeSort(0, arr.length - 1)) || 1;
-    if (t === -1){
+    if (t === -1) {
       visual.showData(undefined, arr);
       return arr;
     }
     visual.showData("#00ff00", arr);
-    return arr
-  }
+    return arr;
+  },
 });
 //#endregion
 
@@ -213,7 +213,7 @@ sortContainer.set("Merge Sort".toLowerCase(),{
 sortContainer.set("Shell Sort".toLowerCase(), {
   family: "Shell Sort",
   name: "Shell Sort",
-  sort: async (visual, arr) =>{
+  sort: async (visual, arr) => {
     visual.status = 1;
     let max = arr.length,
       gap = ~~(arr.length / 2),
@@ -224,10 +224,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
       for (;;) {
         await visual.sleep();
         if (!visual.status) return 0;
-        if (
-          temp_index - gap >= 0 &&
-          arr[temp_index] < arr[temp_index - gap]
-        ) {
+        if (temp_index - gap >= 0 && arr[temp_index] < arr[temp_index - gap]) {
           temp = arr[temp_index];
           arr[temp_index] = arr[temp_index - gap];
           arr[temp_index - gap] = temp;
@@ -260,7 +257,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
@@ -318,7 +315,7 @@ sortContainer.set("Cocktail Sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
@@ -416,7 +413,7 @@ sortContainer.set("Quick Sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
@@ -437,11 +434,9 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
         range[~~((arr[i] % 10 ** n) / 10 ** (n - 1))]++;
         visual.showData(undefined, arr);
         visual.highLightedLine("#ff0505", i);
-        // await here
       }
       for (let i = 1; i < range.length; i++) {
         range[i] += range[i - 1];
-        // await visual.sleep();
       }
       range.unshift(0);
       range.pop();
@@ -460,9 +455,9 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
       }
 
       for (let i = 0, l = arr.length; i !== l; i++) {
-        let t = ~~((arr[i] % 10 ** n) / 10 ** (n - 1));
-        temp_arr[range[t]] = arr[i];
-        range[t]++;
+        let digit = ~~((arr[i] % 10 ** n) / 10 ** (n - 1));
+        temp_arr[range[digit]] = arr[i];
+        range[digit]++;
       }
       for (;;) {
         await visual.sleep();
@@ -496,7 +491,7 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
     }
     visual.showData("#00ff00", arr);
     return arr;
-  }
+  },
 });
 
 //#endregion
@@ -506,7 +501,40 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
   family: "Radix Sort",
   name: "In-Place LSD Radix Sort",
   sort: async (visual, arr) => {
+    visual.status = 1;
+    let bucket_index = [],
+      len = arr.length;
+    let max_p = ~~Math.log10(Math.max.apply(null, arr)) + 1;
+    let cur_pos = 0;
+    for (let n = 1; n <= max_p; n++) {
+      cur_pos = 0;
+      bucket_index = [];
+      for (let i = 0; i < 10; i++) {
+        bucket_index.push(len - 1);
+      }
+      for (let i = 0; i < len; i++) {
+        let digit = ~~((arr[cur_pos] % 10 ** n) / 10 ** (n - 1));
+        await visual.sleep();
+        if (!visual.status) {
+          visual.showData(undefined, arr);
+          return arr;
+        }
+        visual.showData(undefined, arr);
+        visual.highLightedLine("#ff0505", cur_pos, ...bucket_index);
+        if (digit === 0) {
+          cur_pos++;
+        } else {
+          for (let j = cur_pos, end = bucket_index[digit - 1]; j < end; j++) {
+            let temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+          }
 
+          for (let j = digit - 1; j > 0; j--) bucket_index[j - 1]--;
+        }
+      }
+    }
+    visual.showData("#00ff00", arr);
     return arr;
   },
 });

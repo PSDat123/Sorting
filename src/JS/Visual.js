@@ -1,13 +1,14 @@
 import { sortContainer } from "./Sort_fn/Sort.js";
-"use strict";
+("use strict");
 
 export class Visualizer {
   constructor(num, canvas) {
     this.c = canvas.getContext("2d", { alpha: false });
+    this.mult_data_y = [];
     this.o_data_x = [];
     this.o_data_y = [];
-    this.canvas = canvas;
     this.c_height = canvas.height;
+    this.p_c_height = this.c_height;
     this.c_width = canvas.width;
     this.num = num;
     this.col_w = this.c_width / this.num;
@@ -15,7 +16,7 @@ export class Visualizer {
     this.status = 0;
     this.description = (() => {
       let n_con = {};
-      for (let val of sortContainer.values()){
+      for (let val of sortContainer.values()) {
         // eslint-disable-next-line no-prototype-builtins
         if (n_con.hasOwnProperty(val.family)) {
           n_con[val.family].push(val.name);
@@ -23,18 +24,13 @@ export class Visualizer {
           break;
         }
         n_con[val.family] = [val.name];
-      } 
+      }
       return Object.fromEntries(Object.entries(n_con).sort());
     })();
   }
   //#endregion
-  sleep(){
+  sleep() {
     return new Promise(requestAnimationFrame);
-  }
-  updateCanvas(_canvas) {
-    this.c_height = _canvas.height;
-    this.c_width = _canvas.width;
-    this.col_w = this.c_width / this.o_data_x.length;
   }
 
   callBack() {}
@@ -44,12 +40,22 @@ export class Visualizer {
   stopSort() {
     this.status = 0;
     this.callBack();
-    // this.status = 0;
   }
   async startSort(name = "") {
-    this.o_data_y = await sortContainer
-      .get(name)
-      .sort(this, this.o_data_y);
+    this.o_data_y = await sortContainer.get(name).sort(this, this.o_data_y);
+    this.stopSort();
+  }
+  async shuffle(){
+    this.status = 1;
+    for(let i = this.o_data_y.length - 1; i--;){
+      await this.sleep();
+      if (!this.status) break;
+      this.showData();
+      let ran = ~~(Math.random() * (i + 1))
+      let temp = this.o_data_y[i];
+      this.o_data_y[i] = this.o_data_y[ran];
+      this.o_data_y[ran] = temp;
+    }
     this.stopSort();
   }
 }
@@ -85,7 +91,6 @@ export class ColumnVisual extends Visualizer {
     this.c.fillStyle = "#f0f0f0";
   }
   async update(anim = 1) {
-    this.updateCanvas(this.canvas);
     let n_num = this.num;
     this.col_w = this.c_width / n_num;
     let cur_l = this.o_data_x.length,
@@ -143,12 +148,7 @@ export class ColumnVisual extends Visualizer {
     }
   }
   async randomize() {
-    await this.animData(
-      this.o_data_y,
-      0,
-      this.o_data_y.length,
-      "down"
-    );
+    await this.animData(this.o_data_y, 0, this.o_data_y.length, "down");
     this.o_data_x = [];
     this.o_data_y = [];
     await this.update(this.num);

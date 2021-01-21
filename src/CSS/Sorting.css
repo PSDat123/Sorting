@@ -70,7 +70,7 @@ a {
   font-size: initial;
 
   padding: 1vh 2.75vw 1vh 1vw;
-  min-width:10vw;
+  min-width: 10vw;
   border: 0.25em solid black;
   border-radius: 5px;
 
@@ -92,7 +92,9 @@ a {
   position: absolute;
   font-size: 1.5rem;
   right: 0.75vw;
-  transform: translate(0, -15%);
+  top: 20%;
+  /* transform: translate(0, -15%); */
+  transition: transform 100ms ease-in;
 }
 .choices {
   font-weight: bold;
@@ -107,20 +109,19 @@ a {
   /* color:black; */
   font-size: 1.2em;
 }
-.sub-select-container{
+.sub-select-container {
   position: relative;
 }
-.sub-select{
+.sub-select {
   display: block;
 }
-.sub-select-items{
+.sub-select-items {
   background: black;
   border: 0.1em solid whitesmoke;
   right: -100%;
   left: 100%;
   top: 0;
   /* transform: translate(100%, 0); */
-  
   position: absolute;
 }
 /*#endregion */
