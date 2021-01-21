@@ -157,7 +157,10 @@ ran_btn.addEventListener("click", async () => {
   }
 });
 stop_btn.addEventListener("click", () => stop_sort());
-shuffle_btn.addEventListener("click", async () => await visual.shuffle());
+shuffle_btn.addEventListener("click", async () => {
+  stop_sort();
+  if(!ran_con) await visual.shuffle();
+});
 //#endregion
 
 //#region Setup
