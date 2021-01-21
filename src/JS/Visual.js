@@ -37,8 +37,9 @@ export class Visualizer {
 
   pauseSort() {}
 
-  stopSort() {
+  async stopSort() {
     this.status = 0;
+    await this.sleep();
     this.callBack();
   }
   async startSort(name = "") {

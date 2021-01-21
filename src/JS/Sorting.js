@@ -112,7 +112,7 @@ visual.callBack = function () {
   start_btn.setAttribute("title", "Start");
   idle = 1;
 };
-start_btn.addEventListener("click", () => {
+start_btn.addEventListener("click", async () => {
   if (!ran_con) visual.status = !visual.status;
   // start_btn.innerHTML = visual.status ? "Stop" : "Start";
   if (visual.status && idle) {
@@ -121,7 +121,7 @@ start_btn.addEventListener("click", () => {
     idle = 0;
     start_sort();
   } else {
-    stop_sort();
+    await stop_sort();
   }
 });
 
@@ -135,8 +135,8 @@ window.addEventListener("resize", () => {
     setup(0);
 });
 
-num_ip.addEventListener("change", () => {
-  stop_sort();
+num_ip.addEventListener("change", async () => {
+  await stop_sort();
   visual.num = parseInt(num_ip.value);
   if (visual.num < +num_ip.min || visual.num > +num_ip.max || !num_ip.value) {
     num_ip.value = default_num;
@@ -147,7 +147,7 @@ num_ip.addEventListener("change", () => {
 });
 
 ran_btn.addEventListener("click", async () => {
-  stop_sort();
+  await stop_sort();
   if (!ran_con) {
     ran_con = 1;
     num_ip.disabled = true;
@@ -158,7 +158,7 @@ ran_btn.addEventListener("click", async () => {
 });
 stop_btn.addEventListener("click", () => stop_sort());
 shuffle_btn.addEventListener("click", async () => {
-  stop_sort();
+  await stop_sort();
   if(!ran_con) await visual.shuffle();
 });
 //#endregion
@@ -197,6 +197,6 @@ async function start_sort() {
     visual.callBack();
   }
 }
-function stop_sort() {
-  visual.stopSort();
+async function stop_sort() {
+  await visual.stopSort();
 }
