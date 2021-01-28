@@ -135,8 +135,12 @@ window.addEventListener("resize", () => {
     setup(0);
 });
 
+window.addEventListener("orientationchange", () => {
+  setup(0);
+});
+
 num_ip.addEventListener("change", async () => {
-  await stop_sort();
+  stop_sort();
   visual.num = parseInt(num_ip.value);
   if (visual.num < +num_ip.min || visual.num > +num_ip.max || !num_ip.value) {
     num_ip.value = default_num;
@@ -166,6 +170,7 @@ shuffle_btn.addEventListener("click", async () => {
 //#region Setup
 function setup(anim = 1) {
   main_canvas.width =
+    nav_bar.clientWidth ||
     window.outerWidth ||
     document.documentElement.clientWidth ||
     document.body.clientWidth;
@@ -173,6 +178,7 @@ function setup(anim = 1) {
     window.innerHeight - nav_bar.clientHeight ||
     document.documentElement.clientHeight - nav_bar.clientHeight ||
     document.body.clientHeight - nav_bar.clientHeight;
+  main_canvas.height -= 5 ;
   visual.c_height = main_canvas.height;
   visual.c_width = main_canvas.width;
 

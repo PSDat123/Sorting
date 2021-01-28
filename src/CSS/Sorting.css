@@ -2,10 +2,20 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   background: black;
 }
+/* ::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} */
 a {
   text-decoration: none;
 }
@@ -17,7 +27,7 @@ a {
   justify-content: left;
   align-items: center;
   position: relative;
-
+  min-width: 100%;
   background: whitesmoke;
   /* box-shadow: 0 5px 3px 0.1em whitesmoke; */
   /* overflow: auto; */
@@ -47,6 +57,7 @@ a {
   position: relative;
   display: block;
   min-width: 10ch;
+  margin-left: 1ch;
 }
 .option-wrap select {
   display: none;
@@ -129,10 +140,12 @@ a {
 /*#region Amount Input*/
 #ip-name {
   /*AMMOUNT NAME*/
-  padding: 1vh 1vw;
+  padding: 1vh 0;
+  padding-left: 1vw;
   font-weight: bold;
   /* float: left; */
   margin: 0.5em 0px;
+  margin-left: 1ch;
   /* padding-right: 4px; */
 }
 .ip {
@@ -142,7 +155,7 @@ a {
 
   padding: 1vh 1vw;
   margin: 0.5em;
-  margin-left: 0.1em;
+  margin-left: 1ch;
 
   border: 0.25em solid black;
   border-radius: 5px;
@@ -202,7 +215,7 @@ a {
 
 /*#region Canvas */
 .main-canvas {
-  border: 2px solid black;
+  border-top: 2px solid black;
   background: black;
   /* width: 100%;
 	height: 100%; */
