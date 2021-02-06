@@ -1,7 +1,7 @@
 import { sortContainer } from "./Sort_fn/Sort.js";
 ("use strict");
 
-export class Visualizer {
+class Visualizer {
   constructor(num, canvas) {
     this.c = canvas.getContext("2d", { alpha: false });
     this.mult_data_y = [];
@@ -14,6 +14,8 @@ export class Visualizer {
     this.col_w = this.c_width / this.num;
     this.speed = 1;
     this.status = 0;
+    this.isPause = 0;
+    this.sh_status = 0;
     this.description = (() => {
       let n_con = {};
       for (let val of sortContainer.values()) {
@@ -29,16 +31,37 @@ export class Visualizer {
     })();
   }
   //#endregion
-  sleep() {
+  async sleep(){
+    if(this.isPause){
+      await new Promise(resolve => {
+        const interval = setInterval(() => {
+          if (!this.isPause) {
+            resolve('');
+            clearInterval(interval);
+          }
+        }, 100);
+      });
+    }
+    else
     return new Promise(requestAnimationFrame);
   }
+  // checkCon(){
+  //   if(!this.status){
+  //     if(this.isPause) return 1;
+  //     else return 0;
+  //   }else return 1;
+  // }
 
   callBack() {}
 
-  pauseSort() {}
+  // pauseSort() {
+  //   this.isPause = 1;
+  // }
 
   async stopSort() {
+    this.sh_status = 0;
     this.status = 0;
+    this.isPause = 0;
     await this.sleep();
     this.callBack();
   }
@@ -47,23 +70,26 @@ export class Visualizer {
     this.stopSort();
   }
   async shuffle(){
-    this.status = 1;
+    this.sh_status = 1;
     for(let i = this.o_data_y.length - 1; i--;){
       await this.sleep();
-      if (!this.status) break;
+      if (!this.sh_status) break;
       this.showData();
       let ran = ~~(Math.random() * (i + 1))
       let temp = this.o_data_y[i];
       this.o_data_y[i] = this.o_data_y[ran];
       this.o_data_y[ran] = temp;
     }
-    this.stopSort();
+    this.sh_status = 0;
   }
 }
 
-export class ColumnVisual extends Visualizer {
+export class BarGraphVisual extends Visualizer {
   constructor(num, canvas) {
     super(num, canvas);
+  }
+  static get modeName(){
+    return "Bar Graph";
   }
   showData(color = "#f0f0f0", arr_y = this.o_data_y, arr_x = this.o_data_x) {
     let h = this.c_height,
@@ -153,5 +179,6 @@ export class ColumnVisual extends Visualizer {
     this.o_data_x = [];
     this.o_data_y = [];
     await this.update(this.num);
+    
   }
 }
