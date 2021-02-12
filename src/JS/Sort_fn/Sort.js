@@ -42,7 +42,7 @@ sortContainer.set("Bubble sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -102,7 +102,7 @@ sortContainer.set("Comb sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -145,7 +145,7 @@ sortContainer.set("Insertion Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -203,7 +203,7 @@ sortContainer.set("Merge Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -255,7 +255,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -313,7 +313,7 @@ sortContainer.set("Cocktail Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -411,7 +411,7 @@ sortContainer.set("Quick Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
@@ -489,14 +489,14 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
   },
 });
 
 //#endregion
 
-//#region In-Place Radix
+//#region In-Place Radix Sort
 sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
   family: "Radix Sort",
   name: "In-Place LSD Radix Sort",
@@ -529,14 +529,44 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
             arr[j] = arr[j + 1];
             arr[j + 1] = temp;
           }
-
           for (let j = digit - 1; j > 0; j--) bucket_index[j - 1]--;
         }
       }
     }
-    visual.showData("#00ff00", arr);
+    visual.finishSort(arr)
     return arr;
-  },
+  }
+});
+//#endregion
+
+//#region Selection Sort
+sortContainer.set("Selection Sort".toLowerCase(), {
+  family: "Selection Sort",
+  name: "Selection Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+    let len = arr.length;
+    let cur_lowest_i = 0;
+    for (let cur_pos = 0; cur_pos < len; cur_pos++) {
+      for (let i = cur_pos; i < len; i++) {
+        await visual.sleep();
+        if (!visual.status) {
+          visual.showData(undefined, arr);
+          return arr;
+        }
+        if (arr[i] < arr[cur_lowest_i]) cur_lowest_i = i;
+        visual.showData(undefined, arr);
+        visual.highLightedLine("#68f571", cur_lowest_i);
+        visual.highLightedLine("#ff0505", i, cur_pos);
+      }
+      let temp = arr[cur_pos];
+      arr[cur_pos] = arr[cur_lowest_i];
+      arr[cur_lowest_i] = temp;
+      cur_lowest_i = cur_pos + 1;
+    }
+    visual.finishSort(arr)
+    return arr;
+  }
 });
 //#endregion
 export { sortContainer };

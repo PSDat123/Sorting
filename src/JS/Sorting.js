@@ -15,10 +15,12 @@ let options = document.querySelector(".option-wrap");
 let modes = document.querySelector(".modes-wrap")
 
 let mode_names = [];
+let mode_obj = {}
 for(let i in VisualTools){
   mode_names.push(VisualTools[i].modeName);
+  mode_obj[VisualTools[i].modeName.toLowerCase()] = VisualTools[i];
 }
-let visual = new VisualTools.BarGraphVisual(parseInt(num_ip.value), main_canvas);
+let visual = new mode_obj["bar graph"](parseInt(num_ip.value), main_canvas);
 let default_num = parseInt(num_ip.value);
 let ran_con = 0;
 //#region Custom Selections
@@ -60,7 +62,9 @@ function createChoice(text = "", container, class_name = "choices", _arrow = 0) 
   }
   return _div;
 }
+
 for (let i in visual.description) {
+  
   if (visual.description[i].length === 1) createChoice(i, select_list);
   else {
     let sub = createChoice(undefined, select_list, "sub-select");
@@ -95,10 +99,49 @@ modes.appendChild(cur_mode);
 let modes_list = document.createElement("DIV");
 modes_list.setAttribute("class", "mode-items");
 modes_list.classList.toggle("hide-items");
+
+//#region Color Mode & Dot Mode Checker
+let color_checker_con = document.createElement("DIV");
+color_checker_con.classList.add("color-checker");
+color_checker_con.setAttribute("title", "Change to color mode");
+let color_checker = document.createElement("INPUT");
+color_checker.type = "checkbox";
+color_checker.id = "Color Mode";
+
+let lb = document.createElement("LABEL");
+lb.htmlFor = "Color Mode";
+lb.appendChild(document.createTextNode("Color Mode"));
+
+color_checker_con.append(color_checker);
+color_checker_con.appendChild(lb);
+modes_list.appendChild(color_checker_con);
+
+let dot_checker_con = document.createElement("DIV");
+dot_checker_con.classList.add("dot-checker");
+dot_checker_con.setAttribute("title", "Change to dot mode");
+let dot_checker = document.createElement("INPUT");
+dot_checker.type = "checkbox";
+dot_checker.id = "Dot Mode";
+
+let lbd = document.createElement("LABEL");
+lbd.htmlFor = "Dot Mode";
+lbd.appendChild(document.createTextNode("Dot Mode"));
+
+dot_checker_con.append(dot_checker);
+dot_checker_con.appendChild(lbd);
+modes_list.appendChild(dot_checker_con);
+//#endregion
 for (let i of mode_names) {
   createChoice(i, modes_list, "m-choices");
 }
 modes.appendChild(modes_list);
+
+function keepModeStatus() {
+  if (color_checker.checked) visual.isColor = true;
+  else visual.isColor = false;
+  if (dot_checker.checked) visual.isDot = true;
+  else visual.isDot = false;
+}
 //#endregion
 
 //#region Events
@@ -156,13 +199,21 @@ for (let i of choices) {
     });
 }
 let m_choices = document.querySelectorAll(".m-choices");
+async function change_mode(i) {
+  cur_mode.firstChild.data = i.innerHTML;
+  let new_mode = i.innerHTML.toLowerCase();
+  cur_mode.setAttribute("value", new_mode);
+  toggleModeList();
+  await stop_sort();
+  visual = new mode_obj[new_mode](parseInt(num_ip.value), main_canvas);
+  reset_callBack();
+  keepModeStatus();
+  setup();
+}
 for (let i of m_choices) {
   i.addEventListener("click", () => {
-    cur_mode.firstChild.data = i.innerHTML;
-    cur_mode.setAttribute("value", i.innerHTML.toLowerCase());
-    toggleModeList();
-    stop_sort();
-  });
+    change_mode(i);
+  }, false);
 }
 window.addEventListener("click", (event) => {
   if (!options.contains(event.target) && cur_select.classList.contains("active")) {
@@ -177,11 +228,14 @@ window.addEventListener("click", (event) => {
 });
 
 let idle = 1;
-visual.callBack = function () {
-  start_btn.firstElementChild.classList = "fas fa-play";
-  start_btn.setAttribute("title", "Start");
-  idle = 1;
-};
+function reset_callBack() {
+  visual.callBack = function () {
+    start_btn.firstElementChild.classList = "fas fa-play";
+    start_btn.setAttribute("title", "Start");
+    idle = 1;
+  };
+}
+reset_callBack();
 start_btn.addEventListener("click", async () => {
   if (!ran_con){
     
@@ -221,7 +275,6 @@ num_ip.addEventListener("change", async () => {
     visual.num = default_num;
     alert("Invalid number (Too high or too low)");
   }
-  // window.scrollTo(0, document.body.scrollHeight);
   setup();
 });
 
@@ -236,14 +289,50 @@ ran_btn.addEventListener("click", async () => {
   }
 });
 stop_btn.addEventListener("click", () => stop_sort());
-shuffle_btn.addEventListener("click", async () => {
-  if(!ran_con){
-    ran_con = 1;
-    await stop_sort();
-    await visual.shuffle();
-    ran_con = 0;
-  }
+shuffle_btn.addEventListener("click", () => {
+  (async function () {
+    if(!ran_con){
+      ran_con = 1;
+      await stop_sort();
+      await visual.shuffle();
+      ran_con = 0;
+    }
+  })();
 });
+
+color_checker.addEventListener("change", () => {
+  if (color_checker.checked) visual.isColor = true;
+  else visual.isColor = false;
+  setup(0);
+});
+dot_checker.addEventListener("change", () => {
+  if (dot_checker.checked) visual.isDot = true;
+  else visual.isDot = false;
+  setup(0);
+});
+
+color_checker_con.addEventListener("click", (event) => {
+  if (
+    !color_checker.contains(event.target) &&
+    !lb.contains(event.target)
+  ) {
+    color_checker.checked = !color_checker.checked;
+    if (color_checker.checked) visual.isColor = true;
+    else visual.isColor = false;
+    setup(0);
+  }
+}, true);
+dot_checker_con.addEventListener("click", (event) => {
+  if (
+    !dot_checker.contains(event.target) &&
+    !lbd.contains(event.target)
+  ) {
+    dot_checker.checked = !dot_checker.checked;
+    if (dot_checker.checked) visual.isDot = true;
+    else visual.isDot = false;
+    setup(0);
+  }
+}, true);
 //#endregion
 
 //#region Setup
@@ -267,7 +356,6 @@ async function start_sort() {
     const start = new Date().getTime();
     console.log(`Start: ${start}`);
 
-    // await visual[cur_select.getAttribute("value").toLowerCase()]?.();
     await visual.startSort(cur_select.getAttribute("value").toLowerCase());
     //End Timer
     const end = new Date().getTime();

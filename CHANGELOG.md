@@ -1,3 +1,15 @@
+---------------------------------------------- February 12th 2021 ----------------------------------------------
+
+** Added Sine & Cosine Graph visual mode **
+
+** Added Selection Sort **
+
+** Added Color Mode (Rainbow) and Dot Mode **
+
+** More compatibility **
+
+## HAPPY LUNAR NEW YEAR ##
+
 ---------------------------------------------- February 6th 2021 ----------------------------------------------
 
 ** Changed .css files to .scss **
