@@ -336,7 +336,14 @@ dot_checker_con.addEventListener("click", (event) => {
 //#endregion
 
 //#region Setup
-let default_width = window.outerWidth;
+let ua = navigator.userAgent;
+let isIphone = ua.indexOf("iPhone") !== -1 || ua.indexOf("iPod") !== -1;
+let isIpad = ua.indexOf("iPad") !== -1;
+let isAndroid = ua.indexOf("Android") !== -1;
+let isMobile = isIphone || isIpad || isAndroid;
+
+let default_width = isMobile ? window.innerWidth : window.outerWidth;
+if(isIphone) default_width = screen.width;
 function setup(anim = 1) {
   main_canvas.width = default_width;
   main_canvas.height = window.innerHeight - nav_bar.clientHeight;
