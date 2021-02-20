@@ -1,54 +1,64 @@
+---------------------------------------------- February 20th 2021 ----------------------------------------------
+
+* Added selection pages in case of the list getting too big
+
+* Added **Bitonic Sort**
+
+* Added **Additive Waves Visual Mode**
+
+* Added **Line Mode**
+
 ---------------------------------------------- February 12th 2021 ----------------------------------------------
 
-** Added Sine & Cosine Graph visual mode **
+* Added **Sine & Cosine Graph** visual mode
 
-** Added Selection Sort **
+* Added **Selection Sort**
 
-** Added Color Mode (Rainbow) and Dot Mode **
+* Added **Color Mode (Rainbow)** and **Dot Mode**
 
-** More compatibility **
+* More compatibility
 
 ## HAPPY LUNAR NEW YEAR ##
 
 ---------------------------------------------- February 6th 2021 ----------------------------------------------
 
-** Changed .css files to .scss **
+* Changed .css files to .scss
 
-** Users are now able to change the visual mode ** (Only 1 mode at the momment, will ad more soon)
+* Users are now able to change the visual mode*(Only 1 mode at the momment, will ad more soon)
 
-** Added ability to pause **
+* Added ability to pause
 
 ---------------------------------------------- January 28th 2021 ----------------------------------------------
 
-** Hot Fixes **
+* Hot Fixes
 
-** Improved Canvas Behavior On Resize **
+* Improved Canvas Behavior On Resize
 
 ---------------------------------------------- January 21th 2021 ----------------------------------------------
 
-** Implemented Inplace LSD Radix sort algorithm **
+* Added **Inplace LSD Radix sort algorithm**
 
-** Implemented Fisher-Yates Shuffle **
+* Added **Fisher-Yates Shuffle**
 
-** Minor styling **
+* Minor styling
 
 ---------------------------------------------- January 14th 2021 ----------------------------------------------
 
-** Moved all of the sorting algortihm to a separate files **
+* Moved all of the sorting algortihm to a separate files
 
-** Reworked some algorithms **
+* Reworked some algorithms
  
-** Improved interativity, more "flex"ible **
+* Improved interativity, more "flex"ible
 
-** Improved animations **
+* Improved animations
 
-** Minor bug extermination **
+* Minor bug extermination
 
-** Un-spaghetti-fied some codes **
+* Un-spaghetti-fied some codes
 
-** Automated progress of adding new algorithm **
+* Automated progress of adding new algorithm
 
-** Added CHANGELOG.md **
+* Added **CHANGELOG.md**
 
 # In-Place LSD Radix Sort && Buttons function in progress
 

@@ -42,7 +42,7 @@ sortContainer.set("Bubble sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -102,7 +102,7 @@ sortContainer.set("Comb sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -145,7 +145,7 @@ sortContainer.set("Insertion Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -203,7 +203,7 @@ sortContainer.set("Merge Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -255,7 +255,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -313,7 +313,7 @@ sortContainer.set("Cocktail Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -411,7 +411,7 @@ sortContainer.set("Quick Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -489,7 +489,7 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
       visual.showData(undefined, arr);
       return arr;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
   },
 });
@@ -533,9 +533,9 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
         }
       }
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
-  }
+  },
 });
 //#endregion
 
@@ -564,9 +564,64 @@ sortContainer.set("Selection Sort".toLowerCase(), {
       arr[cur_lowest_i] = temp;
       cur_lowest_i = cur_pos + 1;
     }
-    visual.finishSort(arr)
+    visual.finishSort(arr);
     return arr;
-  }
+  },
+});
+
+sortContainer.set("Bitonic Sort".toLowerCase(), {
+  family: "Bitonic Sort",
+  name: "Bitonic Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+    let ascend = true;
+    let compAndSwap = async (i, j, dir) => {
+      await visual.sleep();
+      if (!visual.status) return 1;
+      if(dir==(arr[i] > arr[j])){
+        let temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+      visual.showData(undefined, arr);
+      visual.highLightedLine("#ff0505", i, j);
+      return 0;
+    };
+    let greatestPowerOfTwoLessThan = (num) => {
+      let k = 1;
+      while(k > 0 && k < num){
+        k = k<<1;
+      }
+      return k>>>1;
+    }
+    let bitonicSort = async (first, l, dir) => {
+      if (!visual.status) return 1;
+      if(l > 1){
+        let hl = ~~(l / 2);
+
+        await bitonicSort(first, hl, !dir)
+        await bitonicSort(first + hl, l - hl, dir)
+
+        await bitonicMerge(first, l, dir)
+      }
+      if (!visual.status) return 1;
+    };
+    let bitonicMerge = async (first, l, dir) => {
+      if (!visual.status) return 1;
+      if(l > 1){
+        let p = greatestPowerOfTwoLessThan(l);
+        for(let i = first; i < first + l - p; i++){
+          if(await compAndSwap(i ,i + p, dir)) return 1;
+        }
+        await bitonicMerge(first, p, dir);
+        await bitonicMerge(first + p, l - p, dir);
+      }
+    }; 
+    
+    if(await bitonicSort(0, arr.length, ascend)) visual.showData(undefined, arr);
+    else visual.finishSort(arr);
+    return arr;
+  },
 });
 //#endregion
 export { sortContainer };

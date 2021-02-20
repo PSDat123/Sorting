@@ -53,20 +53,22 @@ a {
 }
 
 /*#region Options Selector*/
-.option-wrap, .modes-wrap{
+.option-wrap,
+.modes-wrap {
   position: relative;
   display: block;
   // min-width: 15ch;
   margin-left: 1ch;
   margin-right: 1ch;
 }
-.option-wrap{
+.option-wrap {
   z-index: 10;
 }
-.modes-wrap{
-  z-index: 5;
+.modes-wrap {
+  z-index: 9;
 }
-.select-items, .mode-items {
+.select-items,
+.mode-items {
   position: absolute;
   color: $primary-color;
   background-color: $secondary-color;
@@ -81,7 +83,8 @@ a {
 .hide-items {
   display: none;
 }
-.current-select, .cur-mode {
+.current-select,
+.cur-mode {
   font-weight: bold;
   font-size: initial;
 
@@ -98,23 +101,25 @@ a {
   -o-ransition: background 300ms ease-in, color 300ms ease-out;
   transition: background 300ms ease-in, color 300ms ease-out;
 
-  -webkit-user-select: none;        
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
-  
-  &:hover, .active{
+
+  &:hover,
+  .active {
     background: $secondary-color;
     color: $primary-color;
   }
-  &:focus{
+  &:focus {
     background: $secondary-color;
     color: $primary-color;
     box-shadow: 0 0 6px 1px gray;
   }
 }
 
-.sub-arrow-down, .arrow-down{
+.sub-arrow-down,
+.arrow-down {
   position: absolute;
   font-size: 1.5rem;
   right: 0.5ch;
@@ -126,7 +131,8 @@ a {
   -o-transition: transform 100ms ease-in;
   transition: transform 100ms ease-in;
 }
-.choices, .m-choices {
+.choices,
+.m-choices {
   font-weight: bold;
   text-align: center;
   padding: 1vh 0;
@@ -135,10 +141,10 @@ a {
   -moz-transition: background 100ms ease-out, font-size 100ms ease-out;
   -o-transition: background 100ms ease-out, font-size 100ms ease-out;
   transition: background 100ms ease-out, font-size 100ms ease-out;
-  
-  -webkit-user-select: none;        
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   cursor: pointer;
 
@@ -149,15 +155,17 @@ a {
     font-size: 1.2em;
   }
 }
-.color-checker, .dot-checker{
+.color-checker,
+.dot-checker,
+.line-checker {
   font-weight: bold;
   text-align: center;
   padding: 1vh 0;
   cursor: pointer;
 
-  -webkit-user-select: none;        
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   -webkit-transition: background 100ms ease-out, font-size 100ms ease-out;
@@ -165,11 +173,11 @@ a {
   -o-transition: background 100ms ease-out, font-size 100ms ease-out;
   transition: background 100ms ease-out, font-size 100ms ease-out;
 
-  label{
+  label {
     padding-left: 0.3em;
     cursor: pointer;
   }
-  input{
+  input {
     cursor: pointer;
   }
   &:hover {
@@ -198,7 +206,8 @@ a {
 
 /*#region Amount Input*/
 /*AMMOUNT NAME*/
-#ip-name, #modes-title{
+#ip-name,
+#modes-title {
   padding: 1vh 0;
   padding-left: 1vw;
   font-weight: bold;
@@ -231,11 +240,11 @@ a {
 
   z-index: 6;
 
-  &:hover{
+  &:hover {
     background: $secondary-color;
     color: $primary-color;
   }
-  &:focus{
+  &:focus {
     background: $secondary-color;
     color: $primary-color;
     box-shadow: 0 0 6px 1px gray;
@@ -244,7 +253,8 @@ a {
 /*#endregion */
 
 /*#region Buttons*/
-.btn {
+.btn,
+.page-btn {
   background: $primary-color;
   border: none;
   z-index: 7;
@@ -264,25 +274,60 @@ a {
     box-shadow 100ms ease-out, transform 20ms ease-out;
   transition: background 100ms ease-out, color 100ms ease-in,
     box-shadow 100ms ease-out, transform 20ms ease-out;
-  
-  &:hover{
+
+  &:hover {
     background: $secondary-color;
     color: $primary-color;
     box-shadow: 0 0 0 4px $secondary-color;
   }
-  &:active{
+  &:active {
     -webkit-transform: scale(1.1);
     -moz-transform: scale(1.1);
     -o-transform: scale(1.1);
     -ms-transform: scale(1.1);
     transform: scale(1.1);
   }
-  &:focus{
+  &:focus {
     outline: none;
     box-shadow: 0 0 0 4px $secondary-color;
   }
 }
 /*#endregion*/
+.page-switch {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  .page-btn {
+    font-size: 1.2em;
+    padding: 0.2em 12%;
+    min-width: 1.2em;
+    margin: 0.3em;
+    text-align: center;
+    &:hover {
+      background: $accent-color;
+      color: $primary-color;
+      box-shadow: 0 0 0 4px $secondary-color;
+    }
+    &:active {
+      -webkit-transform: scale(1.05);
+      -moz-transform: scale(1.05);
+      -o-transform: scale(1.05);
+      -ms-transform: scale(1.05);
+      transform: scale(1.05);
+    }
+  }
+  .page-num {
+    font-weight: bold;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    p {
+      margin: 0.3em;
+    }
+  }
+}
 
 /*#region Canvas */
 .main-canvas {
