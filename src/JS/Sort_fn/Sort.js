@@ -161,7 +161,7 @@ sortContainer.set("Merge Sort".toLowerCase(), {
     let mergeSort = async (l, r) => {
       if (!visual.status) return -1;
       if (l < r) {
-        var m = ~~(l + (r - l) / 2);
+        let m = ~~(l + (r - l) / 2);
         await mergeSort(l, m);
         await mergeSort(m + 1, r);
 
@@ -529,6 +529,7 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
             arr[j] = arr[j + 1];
             arr[j + 1] = temp;
           }
+          await visual.sleep(1);
           for (let j = digit - 1; j > 0; j--) bucket_index[j - 1]--;
         }
       }
@@ -578,7 +579,7 @@ sortContainer.set("Bitonic Sort".toLowerCase(), {
     let compAndSwap = async (i, j, dir) => {
       await visual.sleep();
       if (!visual.status) return 1;
-      if(dir==(arr[i] > arr[j])){
+      if (dir == arr[i] > arr[j]) {
         let temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
@@ -589,36 +590,37 @@ sortContainer.set("Bitonic Sort".toLowerCase(), {
     };
     let greatestPowerOfTwoLessThan = (num) => {
       let k = 1;
-      while(k > 0 && k < num){
-        k = k<<1;
+      while (k > 0 && k < num) {
+        k = k << 1;
       }
-      return k>>>1;
-    }
+      return k >>> 1;
+    };
     let bitonicSort = async (first, l, dir) => {
       if (!visual.status) return 1;
-      if(l > 1){
+      if (l > 1) {
         let hl = ~~(l / 2);
 
-        await bitonicSort(first, hl, !dir)
-        await bitonicSort(first + hl, l - hl, dir)
+        await bitonicSort(first, hl, !dir);
+        await bitonicSort(first + hl, l - hl, dir);
 
-        await bitonicMerge(first, l, dir)
+        await bitonicMerge(first, l, dir);
       }
       if (!visual.status) return 1;
     };
     let bitonicMerge = async (first, l, dir) => {
       if (!visual.status) return 1;
-      if(l > 1){
+      if (l > 1) {
         let p = greatestPowerOfTwoLessThan(l);
-        for(let i = first; i < first + l - p; i++){
-          if(await compAndSwap(i ,i + p, dir)) return 1;
+        for (let i = first; i < first + l - p; i++) {
+          if (await compAndSwap(i, i + p, dir)) return 1;
         }
         await bitonicMerge(first, p, dir);
         await bitonicMerge(first + p, l - p, dir);
       }
-    }; 
-    
-    if(await bitonicSort(0, arr.length, ascend)) visual.showData(undefined, arr);
+    };
+
+    if (await bitonicSort(0, arr.length, ascend))
+      visual.showData(undefined, arr);
     else visual.finishSort(arr);
     return arr;
   },

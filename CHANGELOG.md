@@ -1,65 +1,71 @@
+------------------------------------------------ March 4th 2021 ------------------------------------------------
+
+- Added **Circular Plot & Elliptic Plot Visual Mode** - compatible with color & dot & line mode
+
+- Added **Settings** (Change the theme & speed)
+
 ---------------------------------------------- February 20th 2021 ----------------------------------------------
 
-* Added selection pages in case of the list getting too big
+- Added selection pages in case of the list getting too big
 
-* Added **Bitonic Sort**
+- Added **Bitonic Sort**
 
-* Added **Additive Waves Visual Mode**
+- Added **Additive Waves Visual Mode**
 
-* Added **Line Mode**
+- Added **Line Mode**
 
 ---------------------------------------------- February 12th 2021 ----------------------------------------------
 
-* Added **Sine & Cosine Graph** visual mode
+- Added **Sine & Cosine Graph** visual mode
 
-* Added **Selection Sort**
+- Added **Selection Sort**
 
-* Added **Color Mode (Rainbow)** and **Dot Mode**
+- Added **Color Mode (Rainbow)** and **Dot Mode**
 
-* More compatibility
+- More compatibility
 
-## HAPPY LUNAR NEW YEAR ##
+## HAPPY LUNAR NEW YEAR
 
 ---------------------------------------------- February 6th 2021 ----------------------------------------------
 
-* Changed .css files to .scss
+- Changed .css files to .scss
 
-* Users are now able to change the visual mode*(Only 1 mode at the momment, will ad more soon)
+- Users are now able to change the visual mode\*(Only 1 mode at the momment, will ad more soon)
 
-* Added ability to pause
+- Added ability to pause
 
 ---------------------------------------------- January 28th 2021 ----------------------------------------------
 
-* Hot Fixes
+- Hot Fixes
 
-* Improved Canvas Behavior On Resize
+- Improved Canvas Behavior On Resize
 
 ---------------------------------------------- January 21th 2021 ----------------------------------------------
 
-* Added **Inplace LSD Radix sort algorithm**
+- Added **Inplace LSD Radix sort algorithm**
 
-* Added **Fisher-Yates Shuffle**
+- Added **Fisher-Yates Shuffle**
 
-* Minor styling
+- Minor styling
 
 ---------------------------------------------- January 14th 2021 ----------------------------------------------
 
-* Moved all of the sorting algortihm to a separate files
+- Moved all of the sorting algortihm to a separate files
 
-* Reworked some algorithms
- 
-* Improved interativity, more "flex"ible
+- Reworked some algorithms
 
-* Improved animations
+- Improved interativity, more "flex"ible
 
-* Minor bug extermination
+- Improved animations
 
-* Un-spaghetti-fied some codes
+- Minor bug extermination
 
-* Automated progress of adding new algorithm
+- Un-spaghetti-fied some codes
 
-* Added **CHANGELOG.md**
+- Automated progress of adding new algorithm
+
+- Added **CHANGELOG.md**
 
 # In-Place LSD Radix Sort && Buttons function in progress
 
---------------------------------------------------------------------------------------------------------
+---

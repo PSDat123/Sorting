@@ -2,7 +2,8 @@ import * as VisualTools from "./Visual.js";
 
 let main_canvas = document.querySelector(".main-canvas");
 let nav_bar = document.querySelector(".nav-bar");
-let p_nav_h = nav_bar.clientHeight;
+let p_nav_h = 0;
+let p_inner_h = 0;
 
 let num_ip = document.querySelector(".ip");
 
@@ -10,21 +11,307 @@ let start_btn = document.querySelector("#start");
 let ran_btn = document.querySelector("#randomizer");
 let stop_btn = document.querySelector("#stop");
 let shuffle_btn = document.querySelector("#shuffle");
+let setting_btn = document.querySelector("#settings");
 
 let options = document.querySelector(".option-wrap");
 let modes = document.querySelector(".modes-wrap");
 
 let mode_names = [];
 let mode_obj = {};
+let root = document.documentElement;
 for (let i in VisualTools) {
   mode_names.push(VisualTools[i].modeName);
   mode_obj[VisualTools[i].modeName.toLowerCase()] = VisualTools[i];
 }
-let visual = new mode_obj["bar graph"](parseInt(num_ip.value), main_canvas);
+let visual = new mode_obj["bar graph"](
+  parseInt(num_ip.value),
+  main_canvas,
+  getComputedStyle(root).getPropertyValue("--primary-color")
+);
 let default_num = parseInt(num_ip.value);
 let ran_con = 0;
-//#region Custom Selections
 
+//#region Settings
+let setting_list = ["Speed", "Theme"];
+let setting_con = (() => {
+  let content = document.createElement("DIV");
+  content.setAttribute("class", "setting-con");
+  content.setAttribute("id", "setting");
+  content.classList.toggle("hide-items");
+
+  let setting_header = document.createElement("DIV");
+  setting_header.setAttribute("class", "setting-header");
+  setting_header.setAttribute("id", "setting-header");
+
+  let back = document.createElement("I");
+  back.setAttribute("class", "fas fa-arrow-left back");
+  setting_header.appendChild(back);
+
+  setting_header.appendChild(document.createTextNode("SETTINGS"));
+
+  let exit = document.createElement("I");
+  exit.setAttribute("class", "fas fa-times exit");
+  setting_header.appendChild(exit);
+
+  exit.addEventListener("click", () => {
+    content.classList.toggle("hide-items");
+  });
+  back.addEventListener("click", () => {
+    let child = setting_con.childNodes;
+    for (const i of child) {
+      if (i.id !== "setting-header") i.classList.add("hide-items");
+      if (i.id === "setting-opts") i.classList.remove("hide-items");
+    }
+  });
+  content.appendChild(setting_header);
+  return content;
+})();
+
+let setting_elms = {};
+let setting_opts = document.createElement("DIV");
+setting_opts.setAttribute("class", "setting-opts");
+setting_opts.setAttribute("id", "setting-opts");
+for (const i of setting_list) {
+  let content = document.createElement("DIV");
+  content.setAttribute("class", `setting-choices ${i}`);
+  content.innerHTML = i;
+  setting_elms[i] = content;
+}
+let setting_content = {};
+
+//#region Speed changer
+setting_content[setting_list[0]] = (() => {
+  let content = document.createElement("DIV");
+  content.setAttribute("class", "speed-changer hide-items");
+
+  //#region info box
+  let info_con = document.createElement("DIV");
+  info_con.setAttribute("class", "info-con");
+  let parag1 = document.createElement("P");
+  let parag2 = document.createElement("P");
+  let parag3 = document.createElement("P");
+  parag1.appendChild(document.createTextNode("30fps ~~ 33.33ms"));
+  parag2.appendChild(document.createTextNode("40fps ~~ 25ms"));
+  parag3.appendChild(document.createTextNode("60fps ~~ 16.67ms"));
+  info_con.appendChild(parag1);
+  info_con.appendChild(parag2);
+  info_con.appendChild(parag3);
+  //#endregion
+
+  //#region Smooth
+  let smooth_con = document.createElement("DIV");
+  smooth_con.setAttribute("class", "smooth-con");
+  let smooth_btn = document.createElement("INPUT");
+  let smooth_lb = document.createElement("LABEL");
+  smooth_btn.type = "checkbox";
+  smooth_btn.id = "smooth-opt";
+  smooth_lb.htmlFor = "smooth-opt";
+  smooth_lb.appendChild(document.createTextNode("OPTIMIZED"));
+  smooth_lb.setAttribute(
+    "title",
+    "Optimize animations to make them smoother and more resource efficient"
+  );
+  smooth_btn.checked = true;
+  smooth_con.appendChild(document.createElement("HR"));
+  smooth_con.appendChild(smooth_lb);
+  smooth_con.appendChild(smooth_btn);
+  //#endregion
+  info_con.appendChild(smooth_con);
+  //#region input box
+  let input_con = document.createElement("DIV");
+  input_con.setAttribute("class", "input-con");
+  let input = document.createElement("INPUT");
+  input.setAttribute("id", "ip");
+  input.setAttribute("value", "33.33");
+  let ip_lb = document.createElement("LABEL");
+  ip_lb.htmlFor = "ip";
+  ip_lb.appendChild(document.createTextNode("Delay"));
+  let unit = document.createElement("P");
+  unit.appendChild(document.createTextNode("ms"));
+
+  input.disabled = true;
+  input.addEventListener("change", () => {
+    if (+input.value < 0) {
+      alert("Invalid value, enter a new one");
+      input.value = 33.33;
+    }
+    visual.speed = +input.value;
+  });
+  smooth_btn.addEventListener("change", () => {
+    input.disabled = !input.disabled;
+    if (smooth_btn.checked) {
+      visual.speed = 0;
+    } else visual.speed = +input.value;
+  });
+
+  input_con.appendChild(ip_lb);
+  input_con.appendChild(input);
+  input_con.appendChild(unit);
+  //#endregion
+
+  content.appendChild(info_con);
+  content.appendChild(input_con);
+  return content;
+})();
+//#endregion
+
+//#region Theme changer
+setting_content[setting_list[1]] = (() => {
+  let content = document.createElement("DIV");
+  content.setAttribute("class", "theme-changer hide-items");
+
+  let primary_con = document.createElement("DIV");
+  primary_con.setAttribute("class", "color-ip");
+  let primary = document.createElement("INPUT");
+  primary.id = "primary";
+  primary.type = "color";
+  primary.setAttribute(
+    "value",
+    getComputedStyle(root).getPropertyValue("--primary-color")
+  );
+  let plb = document.createElement("LABEL");
+  plb.htmlFor = "primary";
+  plb.appendChild(document.createTextNode("Primary Color: "));
+  primary_con.appendChild(plb);
+  primary_con.appendChild(primary);
+
+  let secondary_con = document.createElement("DIV");
+  secondary_con.setAttribute("class", "color-ip");
+  let secondary = document.createElement("INPUT");
+  secondary.id = "secondary";
+  secondary.type = "color";
+  secondary.setAttribute(
+    "value",
+    getComputedStyle(root).getPropertyValue("--secondary-color")
+  );
+  let slb = document.createElement("LABEL");
+  slb.htmlFor = "secondary";
+  slb.appendChild(document.createTextNode("Secondary Color: "));
+  secondary_con.appendChild(slb);
+  secondary_con.appendChild(secondary);
+
+  let accent_con = document.createElement("DIV");
+  accent_con.setAttribute("class", "color-ip");
+  let accent = document.createElement("INPUT");
+  accent.id = "accent";
+  accent.type = "color";
+  accent.setAttribute(
+    "value",
+    getComputedStyle(root).getPropertyValue("--accent-color")
+  );
+  let alb = document.createElement("LABEL");
+  alb.htmlFor = "accent";
+  alb.appendChild(document.createTextNode("Accent Color: "));
+  accent_con.appendChild(alb);
+  accent_con.appendChild(accent);
+
+  let is_data_color_con = document.createElement("DIV");
+  is_data_color_con.setAttribute("class", "color-ip");
+  let is_data_color = document.createElement("INPUT");
+  is_data_color.type = "checkbox";
+  is_data_color.id = "data_color_opt";
+  let dlb = document.createElement("LABEL");
+  dlb.htmlFor = "data_color_opt";
+  dlb.appendChild(document.createTextNode("Change Color Of Data?"));
+  is_data_color_con.appendChild(dlb);
+  is_data_color_con.appendChild(is_data_color);
+
+  is_data_color.addEventListener("change", () => {
+    if (is_data_color.checked) {
+      visual.def_color = primary.value;
+      setup(0);
+    } else {
+      visual.def_color = "#f0f0f0";
+      setup(0);
+    }
+  });
+  primary.addEventListener("change", () => {
+    root.style.setProperty("--primary-color", primary.value);
+    if (is_data_color.checked) {
+      visual.def_color = primary.value;
+      setup(0);
+    }
+  });
+  secondary.addEventListener("change", () => {
+    root.style.setProperty("--secondary-color", secondary.value);
+  });
+  accent.addEventListener("change", () => {
+    root.style.setProperty("--accent-color", accent.value);
+  });
+
+  content.appendChild(primary_con);
+  content.appendChild(secondary_con);
+  content.appendChild(accent_con);
+  content.appendChild(is_data_color_con);
+  return content;
+})();
+//#endregion
+
+// console.log(setting_content);
+for (const i in setting_elms) {
+  setting_opts.appendChild(setting_elms[i]);
+  setting_elms[i].addEventListener("click", () => {
+    setting_content[i]?.classList.toggle("hide-items");
+    setting_opts.classList.toggle("hide-items");
+  });
+  setting_con.appendChild(setting_content[i]);
+}
+setting_con.appendChild(setting_opts);
+
+document.body.appendChild(setting_con);
+dragElement(setting_con);
+
+function dragElement(elmnt) {
+  //Got this from w3school, too lazy to do it myself
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  if (document.getElementById(elmnt.id + "-header")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(elmnt.id + "-header").onmousedown = dragMouseDown;
+  }
+  // else {
+  //   // otherwise, move the DIV from anywhere inside the DIV:
+  //   elmnt.onmousedown = dragMouseDown;
+  // }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+setting_btn.addEventListener("click", () => {
+  setting_con.classList.toggle("hide-items");
+});
+//#endregion
+
+//#region Custom Selections
 let opt_pages = [];
 let cur_page = 1;
 let max_items_inpage = 9;
@@ -164,7 +451,7 @@ let lb = document.createElement("LABEL");
 lb.htmlFor = "Color Mode";
 lb.appendChild(document.createTextNode("Color Mode"));
 
-color_checker_con.append(color_checker);
+color_checker_con.appendChild(color_checker);
 color_checker_con.appendChild(lb);
 modes_list.appendChild(color_checker_con);
 //#endregion
@@ -298,7 +585,13 @@ async function change_mode(i) {
   cur_mode.setAttribute("value", new_mode);
   toggleModeList();
   await stop_sort();
-  visual = new mode_obj[new_mode](parseInt(num_ip.value), main_canvas);
+  let p_speed = visual.speed;
+  visual = new mode_obj[new_mode](
+    parseInt(num_ip.value),
+    main_canvas,
+    getComputedStyle(root).getPropertyValue("--primary-color")
+  );
+  visual.speed = p_speed;
   reset_callBack();
   keepModeStatus();
   setup();
@@ -351,13 +644,13 @@ start_btn.addEventListener("click", async () => {
   }
 });
 
-window.addEventListener("resize", () => {
-  if (
-    window.outerWidth - window.innerWidth < 100 ||
-    window.outerHeight - window.innerHeight < 200 ||
-    nav_bar.clientHeight !== p_nav_h
-  ) {
+window.addEventListener("resize", async () => {
+  if (window.innerHeight !== p_inner_h || nav_bar.clientHeight !== p_nav_h) {
     p_nav_h = nav_bar.clientHeight;
+    p_inner_h = window.innerHeight;
+    await stop_sort();
+    setup(0);
+    visual.reset(main_canvas);
     setup(0);
   }
 });
@@ -410,14 +703,13 @@ dot_checker.addEventListener("change", () => {
   setup(0);
 });
 line_checker.addEventListener("change", () => {
-  if (line_checker.checked){
+  if (line_checker.checked) {
     visual.isLine = true;
     visual.isDot = false;
     visual.isColor = false;
     dot_checker.checked = false;
     color_checker.checked = false;
-  }
-  else visual.isLine = false;
+  } else visual.isLine = false;
   setup(0);
 });
 
@@ -449,23 +741,19 @@ dot_checker_con.addEventListener(
   },
   true
 );
-line_checker_con.addEventListener(
-  "click",
-  (event) => {
-    if (!line_checker.contains(event.target) && !lbl.contains(event.target)) {
-      line_checker.checked = !line_checker.checked;
-      if (line_checker.checked){
-        visual.isLine = true;
-        visual.isDot = false;
-        visual.isColor = false;
-        dot_checker.checked = false;
-        color_checker.checked = false;
-      }
-      else visual.isLine = false;
-      setup(0);
-    }
+line_checker_con.addEventListener("click", (event) => {
+  if (!line_checker.contains(event.target) && !lbl.contains(event.target)) {
+    line_checker.checked = !line_checker.checked;
+    if (line_checker.checked) {
+      visual.isLine = true;
+      visual.isDot = false;
+      visual.isColor = false;
+      dot_checker.checked = false;
+      color_checker.checked = false;
+    } else visual.isLine = false;
+    setup(0);
   }
-);
+});
 //#endregion
 
 //#region Setup

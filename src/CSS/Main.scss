@@ -1,6 +1,8 @@
-$primary-color: whitesmoke;
-$secondary-color: black;
-$accent-color: #6e6e6e;
+:root {
+  --primary-color: #f0f0f0;
+  --secondary-color: #000000;
+  --accent-color: #6e6e6e;
+}
 
 body {
   margin: 0;
@@ -9,7 +11,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  background: $secondary-color;
+  background: var(--secondary-color);
 }
 
 a {
@@ -26,7 +28,7 @@ a {
   position: relative;
   min-width: 100%;
   max-width: 100%;
-  background: $primary-color;
+  background: var(--primary-color);
 
   // #{&}__title{
   //   display: flex;
@@ -39,7 +41,7 @@ a {
     display: block;
     padding: 1em;
     overflow: auto;
-    color: $secondary-color;
+    color: var(--secondary-color);
     font-size: 1.25rem;
     font-weight: bold;
     letter-spacing: 1px;
@@ -70,11 +72,11 @@ a {
 .select-items,
 .mode-items {
   position: absolute;
-  color: $primary-color;
-  background-color: $secondary-color;
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
   right: 0;
   left: 0;
-  border: 0.1em solid $primary-color;
+  border: 0.1em solid var(--primary-color);
   // direction: rtl;
   // overflow-y: auto;
   // overflow-x: visible;
@@ -87,10 +89,10 @@ a {
 .cur-mode {
   font-weight: bold;
   font-size: initial;
-
+  color: var(--secondary-color);
   padding: 0.4em 2.75vw 0.4em 0.4em;
   min-width: 15ch;
-  border: 0.25em solid $secondary-color;
+  border: 0.25em solid var(--secondary-color);
   border-radius: 5px;
 
   cursor: pointer;
@@ -108,12 +110,12 @@ a {
 
   &:hover,
   .active {
-    background: $secondary-color;
-    color: $primary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
   }
   &:focus {
-    background: $secondary-color;
-    color: $primary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
     box-shadow: 0 0 6px 1px gray;
   }
 }
@@ -149,9 +151,9 @@ a {
   cursor: pointer;
 
   &:hover {
-    background: $accent-color;
-    /* background: $primary-color; */
-    /* color:$secondary-color; */
+    background: var(--accent-color);
+    /* background: var(--primary-color); */
+    /* color:var(--secondary-color); */
     font-size: 1.2em;
   }
 }
@@ -181,9 +183,9 @@ a {
     cursor: pointer;
   }
   &:hover {
-    background: $accent-color;
-    /* background: $primary-color; */
-    /* color:$secondary-color; */
+    background: var(--accent-color);
+    /* background: var(--primary-color); */
+    /* color:var(--secondary-color); */
     font-size: 1.2em;
   }
 }
@@ -193,8 +195,8 @@ a {
     display: block;
   }
   #{&}__items {
-    background: $secondary-color;
-    border: 0.1em solid $primary-color;
+    background: var(--secondary-color);
+    border: 0.1em solid var(--primary-color);
     right: -100%;
     left: 100%;
     top: 0;
@@ -212,6 +214,7 @@ a {
   padding-left: 1vw;
   font-weight: bold;
   margin: 0.5em 0px;
+  color: var(--secondary-color);
 }
 .ip {
   /*AMOUNT*/
@@ -222,12 +225,12 @@ a {
   margin: 0.5em;
   margin-left: 1ch;
 
-  border: 0.25em solid $secondary-color;
+  border: 0.25em solid var(--secondary-color);
   border-radius: 5px;
 
-  background: $primary-color;
+  background: var(--primary-color);
 
-  color: $secondary-color;
+  color: var(--secondary-color);
   font-size: initial;
   font-weight: bold;
 
@@ -241,12 +244,12 @@ a {
   z-index: 6;
 
   &:hover {
-    background: $secondary-color;
-    color: $primary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
   }
   &:focus {
-    background: $secondary-color;
-    color: $primary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
     box-shadow: 0 0 6px 1px gray;
   }
 }
@@ -255,7 +258,7 @@ a {
 /*#region Buttons*/
 .btn,
 .page-btn {
-  background: $primary-color;
+  background: var(--primary-color);
   border: none;
   z-index: 7;
   font-size: initial;
@@ -264,6 +267,7 @@ a {
   min-width: 1.5em;
   margin: 0.3em;
   display: block;
+  color: var(--secondary-color);
   cursor: pointer;
 
   -webkit-transition: background 100ms ease-out, color 100ms ease-in,
@@ -276,9 +280,9 @@ a {
     box-shadow 100ms ease-out, transform 20ms ease-out;
 
   &:hover {
-    background: $secondary-color;
-    color: $primary-color;
-    box-shadow: 0 0 0 4px $secondary-color;
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--secondary-color);
   }
   &:active {
     -webkit-transform: scale(1.1);
@@ -289,7 +293,7 @@ a {
   }
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 4px $secondary-color;
+    box-shadow: 0 0 0 4px var(--secondary-color);
   }
 }
 /*#endregion*/
@@ -305,9 +309,9 @@ a {
     margin: 0.3em;
     text-align: center;
     &:hover {
-      background: $accent-color;
-      color: $primary-color;
-      box-shadow: 0 0 0 4px $secondary-color;
+      background: var(--accent-color);
+      color: var(--primary-color);
+      box-shadow: 0 0 0 4px var(--secondary-color);
     }
     &:active {
       -webkit-transform: scale(1.05);
@@ -331,9 +335,159 @@ a {
 
 /*#region Canvas */
 .main-canvas {
-  border-top: 2px solid $secondary-color;
-  background: $secondary-color;
+  border-top: 2px solid var(--secondary-color);
+  background: var(--secondary-color);
   /* width: 100%;
 	height: 100%; */
 }
 /*#endregion */
+
+.setting-con {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  font-family: inherit;
+  font-weight: bold;
+  z-index: 20;
+
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  .setting-header {
+    position: relative;
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    border: 0.1em solid var(--primary-color);
+    padding: 0.5em 5em;
+    cursor: pointer;
+    z-index: 21;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    .exit {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      padding: 0.5em;
+      -webkit-transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -o-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+    .back {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      padding: 0.5em;
+      -webkit-transform: translate(0, -50%);
+      -moz-transform: translate(0, -50%);
+      -o-transform: translate(0, -50%);
+      -ms-transform: translate(0, -50%);
+      transform: translate(0, -50%);
+    }
+  }
+  .setting-opts {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+    border: 0.1em solid var(--secondary-color);
+
+    .setting-choices {
+      display: block;
+      text-align: center;
+      padding: 1vh 0;
+
+      -webkit-transition: background 100ms ease-out, font-size 100ms ease-out;
+      -moz-transition: background 100ms ease-out, font-size 100ms ease-out;
+      -o-transition: background 100ms ease-out, font-size 100ms ease-out;
+      transition: background 100ms ease-out, font-size 100ms ease-out;
+
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--accent-color);
+        /* background: var(--primary-color); */
+        color: var(--primary-color);
+        font-size: 1.2em;
+      }
+    }
+  }
+  .speed-changer {
+    position: relative;
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+    border: 0.1em solid var(--secondary-color);
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    .info-con {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      p {
+        margin: 0.5em 0;
+      }
+      .smooth-con {
+        hr {
+          border: 2px solid var(--secondary-color);
+        }
+        padding-top: 1em;
+        font-weight: unset;
+      }
+    }
+    .input-con {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      label {
+        padding: 0 0.2em;
+      }
+      #ip {
+        padding: 0.2em 0.5em;
+        margin: 0.5em;
+        width: 6ch;
+        font-size: 1em;
+        font-weight: bold;
+      }
+      p {
+        padding: 0 0.2em;
+      }
+    }
+  }
+  .theme-changer {
+    position: relative;
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+    border: 0.1em solid var(--secondary-color);
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    .color-ip {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      padding: 0.5em 0;
+      input {
+        margin-left: 2ch;
+      }
+    }
+  }
+}
