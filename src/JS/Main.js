@@ -26,7 +26,7 @@ for (let i in VisualTools) {
 let visual = new mode_obj["bar graph"](
   parseInt(num_ip.value),
   main_canvas,
-  getComputedStyle(root).getPropertyValue("--primary-color")
+  getComputedStyle(root).getPropertyValue("--primary-color").trim() || "#f0f0f0"
 );
 let default_num = parseInt(num_ip.value);
 let ran_con = 0;
@@ -167,7 +167,7 @@ setting_content[setting_list[1]] = (() => {
   primary.type = "color";
   primary.setAttribute(
     "value",
-    getComputedStyle(root).getPropertyValue("--primary-color")
+    getComputedStyle(root).getPropertyValue("--primary-color").trim()
   );
   let plb = document.createElement("LABEL");
   plb.htmlFor = "primary";
@@ -182,7 +182,7 @@ setting_content[setting_list[1]] = (() => {
   secondary.type = "color";
   secondary.setAttribute(
     "value",
-    getComputedStyle(root).getPropertyValue("--secondary-color")
+    getComputedStyle(root).getPropertyValue("--secondary-color").trim()
   );
   let slb = document.createElement("LABEL");
   slb.htmlFor = "secondary";
@@ -197,7 +197,7 @@ setting_content[setting_list[1]] = (() => {
   accent.type = "color";
   accent.setAttribute(
     "value",
-    getComputedStyle(root).getPropertyValue("--accent-color")
+    getComputedStyle(root).getPropertyValue("--accent-color").trim()
   );
   let alb = document.createElement("LABEL");
   alb.htmlFor = "accent";
@@ -219,11 +219,14 @@ setting_content[setting_list[1]] = (() => {
   is_data_color.addEventListener("change", () => {
     if (is_data_color.checked) {
       visual.def_color = primary.value;
-      setup(0);
+      document.body.style.background = getComputedStyle(root)
+        .getPropertyValue("--secondary-color")
+        .trim();
     } else {
       visual.def_color = "#f0f0f0";
-      setup(0);
+      document.body.style.background = "#000000";
     }
+    setup(0);
   });
   primary.addEventListener("change", () => {
     root.style.setProperty("--primary-color", primary.value);
@@ -234,6 +237,12 @@ setting_content[setting_list[1]] = (() => {
   });
   secondary.addEventListener("change", () => {
     root.style.setProperty("--secondary-color", secondary.value);
+    if (is_data_color.checked) {
+      document.body.style.background = getComputedStyle(root)
+        .getPropertyValue("--secondary-color")
+        .trim();
+      setup(0);
+    }
   });
   accent.addEventListener("change", () => {
     root.style.setProperty("--accent-color", accent.value);
@@ -589,7 +598,7 @@ async function change_mode(i) {
   visual = new mode_obj[new_mode](
     parseInt(num_ip.value),
     main_canvas,
-    getComputedStyle(root).getPropertyValue("--primary-color")
+    getComputedStyle(root).getPropertyValue("--primary-color").trim()
   );
   visual.speed = p_speed;
   reset_callBack();

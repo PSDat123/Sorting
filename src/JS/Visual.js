@@ -3,7 +3,7 @@ import { sortContainer } from "./Sort_fn/Sort.js";
 
 class Visualizer {
   constructor(num, canvas, default_color) {
-    this.c = canvas.getContext("2d", { alpha: false });
+    this.c = canvas.getContext("2d");
     this.o_data_x = [];
     this.o_data_y = [];
     this.c_height = canvas.height;
