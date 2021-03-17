@@ -10,7 +10,12 @@ class Visualizer {
     this.c_width = canvas.width;
     this.num = num;
     this.col_w = this.c_width / this.num;
-    this.speed = 0;
+    this.speed = 1;
+    this.tmp_speed = 1;
+    this.changeSpeed = (speed) => {
+      this.speed = speed;
+      this.tmp_speed = speed;
+    };
     this.status = 0;
     this.isPause = 0;
     this.sh_status = 0;
@@ -33,7 +38,7 @@ class Visualizer {
     })();
   }
   //#endregion
-  async sleep(time = this.speed) {
+  async sleep() {
     if (this.isPause) {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
@@ -43,10 +48,11 @@ class Visualizer {
           }
         }, 100);
       });
-    } else
-      return time
-        ? new Promise((resolve) => setTimeout(resolve, time))
-        : new Promise(requestAnimationFrame);
+    } else {
+      if (--this.tmp_speed) return;
+      this.tmp_speed = this.speed;
+      return new Promise(requestAnimationFrame);
+    }
   }
 
   callBack() {}
@@ -63,6 +69,14 @@ class Visualizer {
     await this.stopSort();
   }
   async shuffle() {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!this.isPause) {
+          resolve("");
+          clearInterval(interval);
+        }
+      }, 100);
+    });
     this.sh_status = 1;
     for (let i = this.o_data_y.length; i--; ) {
       await this.sleep();
@@ -83,19 +97,28 @@ class Visualizer {
       return start + (end - start) * per;
     }
     switch (mode) {
-      case "up":
+      case "up": {
+        let tmp_s = this.speed;
+        this.changeSpeed(1);
         for (let i = begin; i < end; i++) {
           temp[i] = 0;
         }
         for (let n = atime; n--; ) {
+          let tmp_s = this.speed;
+          this.changeSpeed(1);
           await this.sleep();
+          this.changeSpeed(tmp_s);
           for (let i = begin; i < end; i++) {
             temp[i] = lerp(temp[i], arr_y[i], 0.15);
           }
           this.showData(undefined, temp);
         }
+        this.changeSpeed(tmp_s);
         break;
-      case "down":
+      }
+      case "down": {
+        let tmp_s = this.speed;
+        this.changeSpeed(1);
         for (let n = atime; n--; ) {
           await this.sleep();
           for (let i = begin; i < end; i++) {
@@ -103,7 +126,9 @@ class Visualizer {
           }
           this.showData(undefined, temp);
         }
+        this.changeSpeed(tmp_s);
         break;
+      }
       default:
         break;
     }
@@ -177,9 +202,8 @@ export class BarGraphVisual extends Visualizer {
       this.drawData__LINE(arr_x, arr_y, cw);
       this.c.strokeStyle = this.def_color;
     } else
-      for (let i = arr_x.length; i--; ) {
+      for (let i = arr_x.length; i--; )
         this.drawData(arr_x[i] - 1, h - arr_y[i], cw, arr_y[i]);
-      }
     this.c.fillStyle = this.def_color;
   }
   highLightedLine__LINE(indexes) {
@@ -247,11 +271,8 @@ export class BarGraphVisual extends Visualizer {
         this.o_data_y.pop();
       }
     } else {
-      for (let i = 0, _l = n_num - cur_l; i < _l; i++) {
+      for (let i = 0, _l = n_num - cur_l; i < _l; i++)
         this.o_data_y.push(~~(Math.random() * (this.c_height - 5)) + min_h);
-        //cos//~~(this.c_height - (Math.cos(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
-        //sin//~~(this.c_height - (Math.sin(this.data.length / 10) + 1) * (this.c_height/2 - min_h/2))
-      }
       if (anim) await this.animData(this.o_data_y, cur_l, n_num);
     }
     this.showData();

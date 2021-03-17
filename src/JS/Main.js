@@ -83,73 +83,38 @@ let setting_content = {};
 setting_content[setting_list[0]] = (() => {
   let content = document.createElement("DIV");
   content.setAttribute("class", "speed-changer hide-items");
-
-  //#region info box
-  let info_con = document.createElement("DIV");
-  info_con.setAttribute("class", "info-con");
-  let parag1 = document.createElement("P");
-  let parag2 = document.createElement("P");
-  let parag3 = document.createElement("P");
-  parag1.appendChild(document.createTextNode("30fps ~~ 33.33ms"));
-  parag2.appendChild(document.createTextNode("40fps ~~ 25ms"));
-  parag3.appendChild(document.createTextNode("60fps ~~ 16.67ms"));
-  info_con.appendChild(parag1);
-  info_con.appendChild(parag2);
-  info_con.appendChild(parag3);
-  //#endregion
-
-  //#region Smooth
-  let smooth_con = document.createElement("DIV");
-  smooth_con.setAttribute("class", "smooth-con");
-  let smooth_btn = document.createElement("INPUT");
-  let smooth_lb = document.createElement("LABEL");
-  smooth_btn.type = "checkbox";
-  smooth_btn.id = "smooth-opt";
-  smooth_lb.htmlFor = "smooth-opt";
-  smooth_lb.appendChild(document.createTextNode("OPTIMIZED"));
-  smooth_lb.setAttribute(
-    "title",
-    "Optimize animations to make them smoother and more resource efficient"
-  );
-  smooth_btn.checked = true;
-  smooth_con.appendChild(document.createElement("HR"));
-  smooth_con.appendChild(smooth_lb);
-  smooth_con.appendChild(smooth_btn);
-  //#endregion
-  info_con.appendChild(smooth_con);
   //#region input box
   let input_con = document.createElement("DIV");
   input_con.setAttribute("class", "input-con");
-  let input = document.createElement("INPUT");
-  input.setAttribute("id", "ip");
-  input.setAttribute("value", "33.33");
-  let ip_lb = document.createElement("LABEL");
-  ip_lb.htmlFor = "ip";
-  ip_lb.appendChild(document.createTextNode("Delay"));
-  let unit = document.createElement("P");
-  unit.appendChild(document.createTextNode("ms"));
 
-  input.disabled = true;
-  input.addEventListener("change", () => {
-    if (+input.value < 0) {
-      alert("Invalid value, enter a new one");
-      input.value = 33.33;
+  let ip_name = document.createElement("P");
+  ip_name.innerHTML = "SPEED: ";
+  let cur_speed = document.createElement("INPUT");
+  cur_speed.setAttribute("class", "cur-speed");
+  cur_speed.type = "number";
+  cur_speed.value = 1;
+  cur_speed.style.width = `4ch`;
+
+  cur_speed.addEventListener("change", () => {
+    let speed = +cur_speed.value;
+    if (speed > 300) {
+      cur_speed.value = visual.speed;
+      alert("Too fast bro");
+      return;
     }
-    visual.speed = +input.value;
-  });
-  smooth_btn.addEventListener("change", () => {
-    input.disabled = !input.disabled;
-    if (smooth_btn.checked) {
-      visual.speed = 0;
-    } else visual.speed = +input.value;
+    if (speed < 1) {
+      cur_speed.value = visual.speed;
+      alert("You want to travel back in time or something?");
+      return;
+    }
+    visual.changeSpeed(speed);
+    cur_speed.style.width = `${~~Math.log10(speed) + 4}ch`;
   });
 
-  input_con.appendChild(ip_lb);
-  input_con.appendChild(input);
-  input_con.appendChild(unit);
+  input_con.appendChild(ip_name);
+  input_con.appendChild(cur_speed);
+
   //#endregion
-
-  content.appendChild(info_con);
   content.appendChild(input_con);
   return content;
 })();

@@ -431,39 +431,23 @@ a {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    .info-con {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      p {
-        margin: 0.5em 0;
-      }
-      .smooth-con {
-        hr {
-          border: 2px solid var(--secondary-color);
-        }
-        padding-top: 1em;
-        font-weight: unset;
-      }
-    }
     .input-con {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: row;
-      label {
-        padding: 0 0.2em;
-      }
-      #ip {
-        padding: 0.2em 0.5em;
-        margin: 0.5em;
-        width: 6ch;
-        font-size: 1em;
-        font-weight: bold;
-      }
       p {
         padding: 0 0.2em;
+        padding-right: 0;
+      }
+      .cur-speed {
+        margin: 1em 0;
+        margin-top: 1.2em;
+        font-size: initial;
+        font-weight: bold;
+        background: var(--primary-color);
+        border: none;
+        outline: none;
       }
     }
   }

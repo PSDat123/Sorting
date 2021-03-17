@@ -10,39 +10,35 @@ sortContainer.set("Bubble sort".toLowerCase(), {
     let count = 0,
       i = 0,
       max = arr.length,
-      temp = 0;
-    let main = async () => {
-      for (;;) {
-        await visual.sleep();
-        if (!visual.status) return 0;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
-        if (i + 1 < max && arr[i] > arr[i + 1]) {
-          temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-          // [arr[i][1], arr[i+1][1]] = [arr[i+1][1], arr[i][1]];
-          count = 0;
-        } else {
-          count++;
-        }
-        if (count === max) {
-          return 1;
-        }
-        i++;
-        if (i === max) {
-          max -= count;
-          count = 0;
-          i = 0;
-        }
-      }
-    };
-    let t = await main();
-    if (!t) {
+      temp = 0,
+      st = 0;
+    for (;;) {
+      await visual.sleep();
+      if (!visual.status) break;
       visual.showData(undefined, arr);
-      return arr;
+      visual.highLightedLine("#ff0505", i);
+      if (i + 1 < max && arr[i] > arr[i + 1]) {
+        temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        // [arr[i][1], arr[i+1][1]] = [arr[i+1][1], arr[i][1]];
+        count = 0;
+      } else {
+        count++;
+      }
+      if (count === max) {
+        st = 1;
+        break;
+      }
+      i++;
+      if (i === max) {
+        max -= count;
+        count = 0;
+        i = 0;
+      }
     }
-    visual.finishSort(arr);
+    if (!st) visual.showData(undefined, arr);
+    else visual.finishSort(arr);
     return arr;
   },
 });
@@ -529,7 +525,6 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
             arr[j] = arr[j + 1];
             arr[j + 1] = temp;
           }
-          await visual.sleep(1);
           for (let j = digit - 1; j > 0; j--) bucket_index[j - 1]--;
         }
       }
@@ -569,7 +564,9 @@ sortContainer.set("Selection Sort".toLowerCase(), {
     return arr;
   },
 });
+//#endregion
 
+//#region Bitonic Sort
 sortContainer.set("Bitonic Sort".toLowerCase(), {
   family: "Bitonic Sort",
   name: "Bitonic Sort",
@@ -623,6 +620,58 @@ sortContainer.set("Bitonic Sort".toLowerCase(), {
       visual.showData(undefined, arr);
     else visual.finishSort(arr);
     return arr;
+  },
+});
+//#endregion
+
+//#region Odd Even Sort
+sortContainer.set("Odd Even Sort".toLowerCase(), {
+  family: "Odd Even Sort",
+  name: "Odd Even Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+    let isSorted = false;
+    while (!isSorted) {
+      isSorted = true;
+      for (let i = 0; i < arr.length - 1; i = i + 2) {
+        await visual.sleep();
+        if (!visual.status) {
+          visual.showData(undefined, arr);
+          return arr;
+        }
+        visual.showData(undefined, arr);
+        visual.highLightedLine("#ff0505", i);
+        if (arr[i] > arr[i + 1]) {
+          let temp = arr[i];
+          arr[i] = arr[i + 1];
+          arr[i + 1] = temp;
+          isSorted = false;
+        }
+      }
+      for (let i = 1; i < arr.length - 1; i += 2) {
+        await visual.sleep();
+        if (!visual.status) {
+          visual.showData(undefined, arr);
+          return arr;
+        }
+        visual.showData(undefined, arr);
+        visual.highLightedLine("#ff0505", i);
+        if (arr[i] > arr[i + 1]) {
+          let temp = arr[i];
+          arr[i] = arr[i + 1];
+          arr[i + 1] = temp;
+          isSorted = false;
+        }
+      }
+    }
+    visual.finishSort(arr);
+    return arr;
+    // Promise.all([evenSort, oddSort]).then((st) => {
+    //   if(st) visual.finishSort(arr);
+    //   else visual.showData(undefined, arr);
+    //   console.log(st);
+    //   return arr;
+    // });
   },
 });
 //#endregion
