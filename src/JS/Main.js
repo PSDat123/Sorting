@@ -47,7 +47,10 @@ let setting_con = (() => {
   back.setAttribute("class", "fas fa-arrow-left back");
   setting_header.appendChild(back);
 
-  setting_header.appendChild(document.createTextNode("SETTINGS"));
+  let text = document.createElement("P");
+  text.setAttribute("class", "setting-header-text")
+  text.innerHTML = "SETTINGS"
+  setting_header.appendChild(text);
 
   let exit = document.createElement("I");
   exit.setAttribute("class", "fas fa-times exit");
@@ -83,7 +86,7 @@ let setting_content = {};
 setting_content[setting_list[0]] = (() => {
   let content = document.createElement("DIV");
   content.setAttribute("class", "speed-changer hide-items");
-  //#region input box
+
   let input_con = document.createElement("DIV");
   input_con.setAttribute("class", "input-con");
 
@@ -95,9 +98,16 @@ setting_content[setting_list[0]] = (() => {
   cur_speed.value = 1;
   cur_speed.style.width = `4ch`;
 
+  let _double = document.createElement("BUTTON");
+  _double.setAttribute("class", "mult btn");
+  _double.innerHTML = "x2";
+  let _half = document.createElement("BUTTON");
+  _half.setAttribute("class", "mult btn");
+  _half.innerHTML = "/2";
+
   cur_speed.addEventListener("change", () => {
     let speed = +cur_speed.value;
-    if (speed > 300) {
+    if (speed > 16384) {
       cur_speed.value = visual.speed;
       alert("Too fast bro");
       return;
@@ -110,11 +120,20 @@ setting_content[setting_list[0]] = (() => {
     visual.changeSpeed(speed);
     cur_speed.style.width = `${~~Math.log10(speed) + 4}ch`;
   });
+  _double.addEventListener("click", () => {
+    cur_speed.value *= 2;
+    cur_speed.dispatchEvent(new Event("change"));
+  })
+  _half.addEventListener("click", () => {
+    cur_speed.value = ~~(cur_speed.value / 2);
+    cur_speed.dispatchEvent(new Event("change"));
+  });
 
   input_con.appendChild(ip_name);
   input_con.appendChild(cur_speed);
+  input_con.appendChild(_double);
+  input_con.appendChild(_half);
 
-  //#endregion
   content.appendChild(input_con);
   return content;
 })();
@@ -125,6 +144,7 @@ setting_content[setting_list[1]] = (() => {
   let content = document.createElement("DIV");
   content.setAttribute("class", "theme-changer hide-items");
 
+  //#region Primary
   let primary_con = document.createElement("DIV");
   primary_con.setAttribute("class", "color-ip");
   let primary = document.createElement("INPUT");
@@ -139,7 +159,9 @@ setting_content[setting_list[1]] = (() => {
   plb.appendChild(document.createTextNode("Primary Color: "));
   primary_con.appendChild(plb);
   primary_con.appendChild(primary);
+  //#endregion
 
+  //#region Secondary
   let secondary_con = document.createElement("DIV");
   secondary_con.setAttribute("class", "color-ip");
   let secondary = document.createElement("INPUT");
@@ -154,7 +176,9 @@ setting_content[setting_list[1]] = (() => {
   slb.appendChild(document.createTextNode("Secondary Color: "));
   secondary_con.appendChild(slb);
   secondary_con.appendChild(secondary);
+  //#endregion
 
+  //#region Accent
   let accent_con = document.createElement("DIV");
   accent_con.setAttribute("class", "color-ip");
   let accent = document.createElement("INPUT");
@@ -169,7 +193,37 @@ setting_content[setting_list[1]] = (() => {
   alb.appendChild(document.createTextNode("Accent Color: "));
   accent_con.appendChild(alb);
   accent_con.appendChild(accent);
+  //#endregion
 
+  //#region Primary Highlight color
+  let highlight_1_con = document.createElement("DIV");
+  highlight_1_con.setAttribute("class", "color-ip");
+  let highlight_1 = document.createElement("INPUT");
+  highlight_1.id = "highlight1";
+  highlight_1.type = "color";
+  highlight_1.setAttribute("value", visual.highLightColor[0]);
+  let h1lb = document.createElement("LABEL");
+  h1lb.htmlFor = "hightlight1";
+  h1lb.appendChild(document.createTextNode("Primary Highlight Color: "));
+  highlight_1_con.appendChild(h1lb);
+  highlight_1_con.appendChild(highlight_1);
+  //#endregion
+
+  //#regionSecondary Highlight color
+  let highlight_2_con = document.createElement("DIV");
+  highlight_2_con.setAttribute("class", "color-ip");
+  let highlight_2 = document.createElement("INPUT");
+  highlight_2.id = "highlight2";
+  highlight_2.type = "color";
+  highlight_2.setAttribute("value", visual.highLightColor[1]);
+  let h2lb = document.createElement("LABEL");
+  h2lb.htmlFor = "hightlight2";
+  h2lb.appendChild(document.createTextNode("Secondary Highlight Color: "));
+  highlight_2_con.appendChild(h2lb);
+  highlight_2_con.appendChild(highlight_2);
+  //#endregion
+
+  //#region Color For Data
   let is_data_color_con = document.createElement("DIV");
   is_data_color_con.setAttribute("class", "color-ip");
   let is_data_color = document.createElement("INPUT");
@@ -180,7 +234,9 @@ setting_content[setting_list[1]] = (() => {
   dlb.appendChild(document.createTextNode("Change Color Of Data?"));
   is_data_color_con.appendChild(dlb);
   is_data_color_con.appendChild(is_data_color);
+  //#endregion
 
+  //#region Event
   is_data_color.addEventListener("change", () => {
     if (is_data_color.checked) {
       visual.def_color = primary.value;
@@ -212,10 +268,19 @@ setting_content[setting_list[1]] = (() => {
   accent.addEventListener("change", () => {
     root.style.setProperty("--accent-color", accent.value);
   });
+  highlight_1.addEventListener("change", () => {
+    visual.highLightColor[0] = highlight_1.value;
+  });
+  highlight_2.addEventListener("change", () => {
+    visual.highLightColor[1] = highlight_2.value;
+  });
+  //#endregion
 
   content.appendChild(primary_con);
   content.appendChild(secondary_con);
   content.appendChild(accent_con);
+  content.appendChild(highlight_1_con);
+  content.appendChild(highlight_2_con);
   content.appendChild(is_data_color_con);
   return content;
 })();
@@ -414,54 +479,134 @@ modes_list.classList.toggle("hide-items");
 //#region Color Mode & Dot Mode & Line Mode Checker
 
 //#region Color Mode
-let color_checker_con = document.createElement("DIV");
-color_checker_con.classList.add("color-checker");
-color_checker_con.setAttribute("title", "Change to color mode");
-let color_checker = document.createElement("INPUT");
-color_checker.type = "checkbox";
-color_checker.id = "Color Mode";
+let color_checker = (() => {
+  let color_checker_con = document.createElement("DIV");
+  color_checker_con.classList.add("color-checker");
+  color_checker_con.setAttribute("title", "Change to color mode");
+  let color_checker_ck = document.createElement("INPUT");
+  color_checker_ck.type = "checkbox";
+  color_checker_ck.id = "Color Mode";
 
-let lb = document.createElement("LABEL");
-lb.htmlFor = "Color Mode";
-lb.appendChild(document.createTextNode("Color Mode"));
+  let lb = document.createElement("LABEL");
+  lb.htmlFor = "Color Mode";
+  lb.appendChild(document.createTextNode("Color Mode"));
+  color_checker_con.appendChild(color_checker_ck);
+  color_checker_con.appendChild(lb);
 
-color_checker_con.appendChild(color_checker);
-color_checker_con.appendChild(lb);
-modes_list.appendChild(color_checker_con);
+  color_checker_ck.addEventListener("change", () => {
+    if (color_checker_ck.checked) visual.isColor = true;
+    else visual.isColor = false;
+    line_checker.firstElementChild.checked = false;
+    visual.isLine = false;
+    setup(0);
+  });
+
+  color_checker_con.addEventListener(
+    "click",
+    (event) => {
+      if (!color_checker_ck.contains(event.target) && !lb.contains(event.target)) {
+        color_checker_ck.checked = !color_checker_ck.checked;
+        if (color_checker_ck.checked) visual.isColor = true;
+        else visual.isColor = false;
+        line_checker.firstElementChild.checked = false;
+        visual.isLine = false;
+        setup(0);
+      }
+    },
+    true
+  );
+  return color_checker_con;
+})();
+modes_list.appendChild(color_checker);
 //#endregion
 
 //#region Dot Mode
-let dot_checker_con = document.createElement("DIV");
-dot_checker_con.classList.add("dot-checker");
-dot_checker_con.setAttribute("title", "Change to dot mode");
-let dot_checker = document.createElement("INPUT");
-dot_checker.type = "checkbox";
-dot_checker.id = "Dot Mode";
+let dot_checker = (() => {
+  let dot_checker_con = document.createElement("DIV");
+  dot_checker_con.classList.add("dot-checker");
+  dot_checker_con.setAttribute("title", "Change to dot mode");
+  let dot_checker_ck = document.createElement("INPUT");
+  dot_checker_ck.type = "checkbox";
+  dot_checker_ck.id = "Dot Mode";
 
-let lbd = document.createElement("LABEL");
-lbd.htmlFor = "Dot Mode";
-lbd.appendChild(document.createTextNode("Dot Mode"));
+  let lb = document.createElement("LABEL");
+  lb.htmlFor = "Dot Mode";
+  lb.appendChild(document.createTextNode("Dot Mode"));
+  dot_checker_con.append(dot_checker_ck);
+  dot_checker_con.appendChild(lb);
 
-dot_checker_con.append(dot_checker);
-dot_checker_con.appendChild(lbd);
-modes_list.appendChild(dot_checker_con);
+  dot_checker_ck.addEventListener("change", () => {
+    if (dot_checker_ck.checked) visual.isDot = true;
+    else visual.isDot = false;
+    line_checker.firstElementChild.checked = false;
+    visual.isLine = false;
+    setup(0);
+    line_checker.getElen
+  });
+
+  dot_checker_con.addEventListener(
+    "click",
+    (event) => {
+      if (!dot_checker_ck.contains(event.target) && !lb.contains(event.target)) {
+        dot_checker_ck.checked = !dot_checker_ck.checked;
+        if (dot_checker_ck.checked) visual.isDot = true;
+        else visual.isDot = false;
+        console.log(line_checker.firstElementChild);
+        line_checker.firstElementChild.checked = false;
+        visual.isLine = false;
+        setup(0);
+      }
+    },
+    true
+  );
+  return dot_checker_con
+})();
+modes_list.appendChild(dot_checker);
 //#endregion
 
 //#region Line Mode
-let line_checker_con = document.createElement("DIV");
-line_checker_con.classList.add("line-checker");
-line_checker_con.setAttribute("title", "Change to line mode");
-let line_checker = document.createElement("INPUT");
-line_checker.type = "checkbox";
-line_checker.id = "Line Mode";
+let line_checker = (() => {
+  let line_checker_con = document.createElement("DIV");
+  line_checker_con.classList.add("line-checker");
+  line_checker_con.setAttribute("title", "Change to line mode");
+  let line_checker_ck = document.createElement("INPUT");
+  line_checker_ck.type = "checkbox";
+  line_checker_ck.id = "Line Mode";
 
-let lbl = document.createElement("LABEL");
-lbl.htmlFor = "Line Mode";
-lbl.appendChild(document.createTextNode("Line Mode"));
+  let lb = document.createElement("LABEL");
+  lb.htmlFor = "Line Mode";
+  lb.appendChild(document.createTextNode("Line Mode"));
 
-line_checker_con.append(line_checker);
-line_checker_con.appendChild(lbl);
-modes_list.appendChild(line_checker_con);
+  line_checker_con.append(line_checker_ck);
+  line_checker_con.appendChild(lb);
+
+  line_checker_ck.addEventListener("change", () => {
+    if (line_checker_ck.checked) {
+      visual.isLine = true;
+      visual.isDot = false;
+      visual.isColor = false;
+      dot_checker.firstElementChild.checked = false;
+      color_checker.firstElementChild.checked = false;
+    } else visual.isLine = false;
+    setup(0);
+  });
+
+  line_checker_con.addEventListener("click", (event) => {
+    if (!line_checker_ck.contains(event.target) && !lb.contains(event.target)) {
+      line_checker_ck.checked = !line_checker_ck.checked;
+      if (line_checker_ck.checked) {
+        visual.isLine = true;
+        visual.isDot = false;
+        visual.isColor = false;
+        dot_checker.firstElementChild.checked = false;
+        color_checker.firstElementChild.checked = false;
+      } else visual.isLine = false;
+      setup(0);
+    }
+  });
+  return line_checker_con
+})();
+modes_list.appendChild(line_checker);
 //#endregion
 
 //#endregion
@@ -471,11 +616,11 @@ for (let i of mode_names) {
 modes.appendChild(modes_list);
 
 function keepModeStatus() {
-  if (color_checker.checked) visual.isColor = true;
-  else visual.isColor = false;
-  if (dot_checker.checked) visual.isDot = true;
+  if (color_checker.firstElementChild.checked) visual.isColor = true;
+  else visual.fisColor = false;
+  if (dot_checker.firstElementChild.checked) visual.isDot = true;
   else visual.isDot = false;
-  if (line_checker.checked) visual.isLine = true;
+  if (line_checker.firstElementChild.checked) visual.isLine = true;
   else visual.isLine = false;
 }
 //#endregion
@@ -560,12 +705,14 @@ async function change_mode(i) {
   toggleModeList();
   await stop_sort();
   let p_speed = visual.speed;
+  let p_color = visual.highLightColor;
   visual = new mode_obj[new_mode](
     parseInt(num_ip.value),
     main_canvas,
     getComputedStyle(root).getPropertyValue("--primary-color").trim()
   );
   visual.speed = p_speed;
+  visual.highLightColor = p_color;
   reset_callBack();
   keepModeStatus();
   setup();
@@ -660,73 +807,6 @@ shuffle_btn.addEventListener("click", () => {
       ran_con = 0;
     }
   })();
-});
-
-color_checker.addEventListener("change", () => {
-  if (color_checker.checked) visual.isColor = true;
-  else visual.isColor = false;
-  line_checker.checked = false;
-  visual.isLine = false;
-  setup(0);
-});
-dot_checker.addEventListener("change", () => {
-  if (dot_checker.checked) visual.isDot = true;
-  else visual.isDot = false;
-  line_checker.checked = false;
-  visual.isLine = false;
-  setup(0);
-});
-line_checker.addEventListener("change", () => {
-  if (line_checker.checked) {
-    visual.isLine = true;
-    visual.isDot = false;
-    visual.isColor = false;
-    dot_checker.checked = false;
-    color_checker.checked = false;
-  } else visual.isLine = false;
-  setup(0);
-});
-
-color_checker_con.addEventListener(
-  "click",
-  (event) => {
-    if (!color_checker.contains(event.target) && !lb.contains(event.target)) {
-      color_checker.checked = !color_checker.checked;
-      if (color_checker.checked) visual.isColor = true;
-      else visual.isColor = false;
-      line_checker.checked = false;
-      visual.isLine = false;
-      setup(0);
-    }
-  },
-  true
-);
-dot_checker_con.addEventListener(
-  "click",
-  (event) => {
-    if (!dot_checker.contains(event.target) && !lbd.contains(event.target)) {
-      dot_checker.checked = !dot_checker.checked;
-      if (dot_checker.checked) visual.isDot = true;
-      else visual.isDot = false;
-      line_checker.checked = false;
-      visual.isLine = false;
-      setup(0);
-    }
-  },
-  true
-);
-line_checker_con.addEventListener("click", (event) => {
-  if (!line_checker.contains(event.target) && !lbl.contains(event.target)) {
-    line_checker.checked = !line_checker.checked;
-    if (line_checker.checked) {
-      visual.isLine = true;
-      visual.isDot = false;
-      visual.isColor = false;
-      dot_checker.checked = false;
-      color_checker.checked = false;
-    } else visual.isLine = false;
-    setup(0);
-  }
 });
 //#endregion
 

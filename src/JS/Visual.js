@@ -36,6 +36,10 @@ class Visualizer {
       }
       return Object.fromEntries(Object.entries(n_con).sort());
     })();
+    this.highLightColor = [
+      "#ff0505",
+      "#68f571"
+    ]
   }
   //#endregion
   async sleep() {
@@ -49,7 +53,7 @@ class Visualizer {
         }, 100);
       });
     } else {
-      if (--this.tmp_speed) return;
+      if (--this.tmp_speed) return 0;
       this.tmp_speed = this.speed;
       return new Promise(requestAnimationFrame);
     }
@@ -79,9 +83,8 @@ class Visualizer {
     });
     this.sh_status = 1;
     for (let i = this.o_data_y.length; i--; ) {
-      await this.sleep();
+      if (await this.sleep()) this.showData();
       if (!this.sh_status) break;
-      this.showData();
       let ran = ~~(Math.random() * (i + 1));
       let temp = this.o_data_y[i];
       this.o_data_y[i] = this.o_data_y[ran];
@@ -104,14 +107,11 @@ class Visualizer {
           temp[i] = 0;
         }
         for (let n = atime; n--; ) {
-          let tmp_s = this.speed;
-          this.changeSpeed(1);
-          await this.sleep();
-          this.changeSpeed(tmp_s);
+          await this.sleep()
+          this.showData(undefined, temp);
           for (let i = begin; i < end; i++) {
             temp[i] = lerp(temp[i], arr_y[i], 0.15);
           }
-          this.showData(undefined, temp);
         }
         this.changeSpeed(tmp_s);
         break;
@@ -120,11 +120,11 @@ class Visualizer {
         let tmp_s = this.speed;
         this.changeSpeed(1);
         for (let n = atime; n--; ) {
-          await this.sleep();
+          await this.sleep() 
+          this.showData(undefined, temp);
           for (let i = begin; i < end; i++) {
             temp[i] = lerp(temp[i], 0, 0.15);
           }
-          this.showData(undefined, temp);
         }
         this.changeSpeed(tmp_s);
         break;
@@ -184,6 +184,7 @@ export class BarGraphVisual extends Visualizer {
     }
     if (this.isDot) {
       this.c.fillRect(x, y, w, w);
+
       return;
     }
     this.c.fillRect(x, y, w, h);
@@ -233,7 +234,7 @@ export class BarGraphVisual extends Visualizer {
       this.c.stroke();
     }
   }
-  async highLightedLine(color = "#ff0505", ...indexes) {
+  async highLightedLine(color = this.highLightColor[0], ...indexes) {
     this.c.fillStyle = this.isColor ? "#000000" : color;
     this.c.strokeStyle = color;
     let h = this.c_height,
@@ -567,7 +568,7 @@ export class CircularVisual extends Visualizer {
       this.c.stroke();
     }
   }
-  async highLightedLine(color = "#ff0505", ...indexes) {
+  async highLightedLine(color = this.highLightColor[0], ...indexes) {
     this.c.fillStyle = this.isColor ? "#000000" : color;
     this.c.strokeStyle = this.isColor ? "#000000" : color;
 

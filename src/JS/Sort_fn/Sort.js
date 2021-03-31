@@ -7,16 +7,18 @@ sortContainer.set("Bubble sort".toLowerCase(), {
   name: "Bubble Sort",
   sort: async (visual, arr) => {
     visual.status = 1;
+    
     let count = 0,
       i = 0,
       max = arr.length,
       temp = 0,
       st = 0;
     for (;;) {
-      await visual.sleep();
+      if (await visual.sleep()){
+        visual.showData(undefined, arr);
+        visual.highLightedLine(undefined, i);
+      }
       if (!visual.status) break;
-      visual.showData(undefined, arr);
-      visual.highLightedLine("#ff0505", i);
       if (i + 1 < max && arr[i] > arr[i + 1]) {
         temp = arr[i];
         arr[i] = arr[i + 1];
@@ -50,7 +52,6 @@ sortContainer.set("Comb sort".toLowerCase(), {
   name: "Comb sort",
   sort: async (visual, arr) => {
     visual.status = 1;
-
     let max = arr.length - 1,
       gap = ~~((arr.length * 10) / 13),
       i = 0,
@@ -61,10 +62,12 @@ sortContainer.set("Comb sort".toLowerCase(), {
 
     let main = async () => {
       for (;;) {
-        await visual.sleep();
+        let tmp = await visual.sleep();
         if (!visual.status) return 0;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
+        if(tmp){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i);
+        }
         if (i + gap <= max && arr[i] > arr[i + gap]) {
           temp = arr[i];
           arr[i] = arr[i + gap];
@@ -77,7 +80,7 @@ sortContainer.set("Comb sort".toLowerCase(), {
         } else {
           count++;
         }
-        if (i + gap <= max) visual.highLightedLine("#ff0505", i + gap);
+        if (i + gap <= max && tmp) visual.highLightedLine(undefined, i + gap);
         i++;
         if (i + gap > max) {
           i = 0;
@@ -116,10 +119,11 @@ sortContainer.set("Insertion Sort".toLowerCase(), {
       temp = 0;
     let main = async () => {
       for (;;) {
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i - 1);
+        }
         if (!visual.status) return 0;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i - 1);
         i--;
         if (i - 1 >= 0 && arr[i] < arr[i - 1]) {
           temp = arr[i];
@@ -172,26 +176,26 @@ sortContainer.set("Merge Sort".toLowerCase(), {
       let il = L.length + R.length;
       let temp_arr = [];
       for (let dl = 0, dr = 0; dl + dr < il; dl++, dr++) {
-        await visual.sleep();
+        let tmp = await visual.sleep();
         if (!visual.status) return -1;
-        visual.showData(undefined, arr);
+        if(tmp) visual.showData(undefined, arr);
         if (R[dr] === undefined || L[dl] < R[dr]) {
           temp_arr.push(L[dl]);
-          visual.highLightedLine("#ff0505", dl + l, m + dr);
+          if(tmp) visual.highLightedLine(undefined, dl + l, m + dr);
           dr--;
         } else {
           temp_arr.push(R[dr]);
-          visual.highLightedLine("#ff0505", dl + l, m + dr);
+          if(tmp) visual.highLightedLine(undefined, dl + l, m + dr);
           dl--;
         }
       }
       for (let i = 0; i < temp_arr.length; i++) {
-        await visual.sleep();
-        if (!visual.status) return -1;
-
         arr[l + i] = temp_arr[i];
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", l + i);
+        if (await visual.sleep()) {
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, l + i);
+        }
+        if (!visual.status) return -1;
       }
     };
     let t = (await mergeSort(0, arr.length - 1)) || 1;
@@ -218,8 +222,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
       temp = 0;
     let main = async () => {
       for (;;) {
-        await visual.sleep();
-        if (!visual.status) return 0;
+        
         if (temp_index - gap >= 0 && arr[temp_index] < arr[temp_index - gap]) {
           temp = arr[temp_index];
           arr[temp_index] = arr[temp_index - gap];
@@ -230,11 +233,15 @@ sortContainer.set("Shell Sort".toLowerCase(), {
           i++;
           temp_index = i;
         }
-        visual.showData(undefined, arr);
-        visual.highLightedLine(
-          "#ff0505",
-          temp_index - gap * (temp_index >= gap)
-        );
+        let tmp = await visual.sleep();
+        if (tmp){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(
+            undefined,
+            temp_index - gap * (temp_index >= gap)
+          );
+        }
+        if (!visual.status) return 0;
         if (i >= max) {
           gap = ~~(gap / 2);
           i = gap;
@@ -243,7 +250,7 @@ sortContainer.set("Shell Sort".toLowerCase(), {
             return 1;
           }
         }
-        visual.highLightedLine("#ff0505", i);
+        if(tmp) visual.highLightedLine(undefined, i);
       }
     };
     let t = await main();
@@ -271,11 +278,11 @@ sortContainer.set("Cocktail Sort".toLowerCase(), {
       count = 0;
     let main = async () => {
       for (;;) {
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i);
+        }
         if (!visual.status) return 0;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
-
         if (min <= i + inc && i + inc <= max) {
           if (
             (inc > 0 && arr[i] > arr[i + inc]) ||
@@ -341,8 +348,8 @@ sortContainer.set("Quick Sort".toLowerCase(), {
     // 	for(j = l; j < r; j++){
     // 		await visual.sleep();
     // 		this.showData();
-    // 		this.redLine("#ff0505", arr[i]);
-    // 		this.redLine("#ff0505", arr[j]);
+    // 		this.redLine(undefined, arr[i]);
+    // 		this.redLine(undefined, arr[j]);
     // 		if(arr[j][1] <= pivot_value){
     // 			temp = arr[i][1]; //swap
     // 			arr[i][1] = arr[j][1];
@@ -361,7 +368,7 @@ sortContainer.set("Quick Sort".toLowerCase(), {
       let con_i = 0,
         con_j = 0;
       //#region --Random pivot--
-      var ran = ~~((r + l) / 2);
+      var ran = ~~(l + (r - l) / 2);
       // temp = arr[ran][1]; //swap
       // arr[ran][1] = arr[l][1];
       // arr[l][1] = temp;
@@ -371,8 +378,6 @@ sortContainer.set("Quick Sort".toLowerCase(), {
         j = r + 1;
 
       for (;;) {
-        await visual.sleep();
-        if (!visual.status) return -1;
         if (!con_i) {
           i++;
           if (arr[i] >= pivot_value) {
@@ -385,9 +390,12 @@ sortContainer.set("Quick Sort".toLowerCase(), {
             con_j = 1;
           }
         }
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#68f571", ran);
-        visual.highLightedLine("#ff0505", i, j - 1 * !con_i);
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(visual.highLightColor[1], ran);
+          visual.highLightedLine(undefined, i, j - 1 * !con_i);
+        }
+        if (!visual.status) return -1;
         if (con_i && con_j) {
           if (i >= j) return j;
           else {
@@ -425,11 +433,13 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
       let range = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //base 10
         temp_arr = [];
       for (let i = 0; i < arr.length; i++) {
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i);
+        }
         if (!visual.status) return 0;
         range[~~((arr[i] % 10 ** n) / 10 ** (n - 1))]++;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
+        
       }
       for (let i = 1; i < range.length; i++) {
         range[i] += range[i - 1];
@@ -441,7 +451,7 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
         bucket_len = [];
       for (let i = 0, l = range.length; i !== l; i++) {
         bucket.push(range[i]);
-        if (range[i] < arr.length) visual.highLightedLine("#ff0505", range[i]);
+        if (range[i] < arr.length) visual.highLightedLine(undefined, range[i]);
         if (i !== 0) {
           if (i === l - 1) {
             bucket_len[i] = arr.length - bucket[i];
@@ -456,14 +466,14 @@ sortContainer.set("LSD Radix Sort".toLowerCase(), {
         range[digit]++;
       }
       for (;;) {
-        await visual.sleep();
+        let tmp = await visual.sleep();
         if (!visual.status) return 0;
         let _n = 0;
-        visual.showData(undefined, arr);
+        if (tmp) visual.showData(undefined, arr);
         for (let i = 0, l = bucket.length; i !== l; i++) {
           if (bucket_len[i]) {
             arr[bucket[i]] = temp_arr[bucket[i]];
-            visual.highLightedLine("#ff0505", bucket[i]);
+            if(tmp) visual.highLightedLine(undefined, bucket[i]);
             bucket[i]++;
             bucket_len[i]--;
             _n++;
@@ -510,13 +520,14 @@ sortContainer.set("In-Place LSD Radix Sort".toLowerCase(), {
       }
       for (let i = 0; i < len; i++) {
         let digit = ~~((arr[cur_pos] % 10 ** n) / 10 ** (n - 1));
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, cur_pos, ...bucket_index);
+        }
         if (!visual.status) {
           visual.showData(undefined, arr);
           return arr;
         }
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", cur_pos, ...bucket_index);
         if (digit === 0) {
           cur_pos++;
         } else {
@@ -545,15 +556,16 @@ sortContainer.set("Selection Sort".toLowerCase(), {
     let cur_lowest_i = 0;
     for (let cur_pos = 0; cur_pos < len; cur_pos++) {
       for (let i = cur_pos; i < len; i++) {
-        await visual.sleep();
+        if (arr[i] < arr[cur_lowest_i]) cur_lowest_i = i;
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(visual.highLightColor[1], cur_lowest_i);
+          visual.highLightedLine(undefined, i, cur_pos);
+        }
         if (!visual.status) {
           visual.showData(undefined, arr);
           return arr;
-        }
-        if (arr[i] < arr[cur_lowest_i]) cur_lowest_i = i;
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#68f571", cur_lowest_i);
-        visual.highLightedLine("#ff0505", i, cur_pos);
+        }  
       }
       let temp = arr[cur_pos];
       arr[cur_pos] = arr[cur_lowest_i];
@@ -574,15 +586,16 @@ sortContainer.set("Bitonic Sort".toLowerCase(), {
     visual.status = 1;
     let ascend = true;
     let compAndSwap = async (i, j, dir) => {
-      await visual.sleep();
-      if (!visual.status) return 1;
       if (dir == arr[i] > arr[j]) {
         let temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
       }
-      visual.showData(undefined, arr);
-      visual.highLightedLine("#ff0505", i, j);
+      if (await visual.sleep()) {
+        visual.showData(undefined, arr);
+        visual.highLightedLine(undefined, i, j);
+      }
+      if (!visual.status) return 1;
       return 0;
     };
     let greatestPowerOfTwoLessThan = (num) => {
@@ -634,13 +647,15 @@ sortContainer.set("Odd Even Sort".toLowerCase(), {
     while (!isSorted) {
       isSorted = true;
       for (let i = 0; i < arr.length - 1; i = i + 2) {
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i);
+        }
         if (!visual.status) {
           visual.showData(undefined, arr);
           return arr;
         }
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
+        
         if (arr[i] > arr[i + 1]) {
           let temp = arr[i];
           arr[i] = arr[i + 1];
@@ -649,13 +664,14 @@ sortContainer.set("Odd Even Sort".toLowerCase(), {
         }
       }
       for (let i = 1; i < arr.length - 1; i += 2) {
-        await visual.sleep();
+        if (await visual.sleep()){
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, i);
+        }
         if (!visual.status) {
           visual.showData(undefined, arr);
           return arr;
         }
-        visual.showData(undefined, arr);
-        visual.highLightedLine("#ff0505", i);
         if (arr[i] > arr[i + 1]) {
           let temp = arr[i];
           arr[i] = arr[i + 1];
@@ -666,13 +682,92 @@ sortContainer.set("Odd Even Sort".toLowerCase(), {
     }
     visual.finishSort(arr);
     return arr;
-    // Promise.all([evenSort, oddSort]).then((st) => {
-    //   if(st) visual.finishSort(arr);
-    //   else visual.showData(undefined, arr);
-    //   console.log(st);
-    //   return arr;
-    // });
   },
 });
 //#endregion
+
+//#region Gnome Sort
+sortContainer.set("Gnome Sort".toLowerCase(), {
+  family: "Gnome Sort",
+  name: "Gnome Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+    let l = arr.length,
+      i = 0;
+    while(i < l){
+      if (await visual.sleep()){
+        visual.showData(undefined, arr);
+        visual.highLightedLine(undefined, i);
+      }
+      if (!visual.status) {
+        visual.showData(undefined, arr);
+        return arr;
+      }
+      if(!i) i++;
+      if(arr[i] >= arr[i - 1]) i++;
+      else{
+        let tmp = arr[i];
+        arr[i] = arr[i - 1];
+        arr[i - 1] = tmp;
+        i--;
+      }
+    }
+    visual.finishSort(arr);
+    return arr;
+  },
+});
+//#endregion
+
+//#region Binary Insertion sort
+sortContainer.set("Binary Insertion Sort".toLowerCase(), {
+  family: "Insertion Sort",
+  name: "Binary Insertion Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+    
+    let binarySearchAndInsert = async (index ,L, R) => {
+      let M = ~~(L + (R - L) / 2);
+      if (!visual.status) {
+        return -1;
+      }
+      if (await visual.sleep()) {
+        visual.showData(undefined, arr);
+        visual.highLightedLine(undefined, index);
+        visual.highLightedLine(visual.highLightColor[1], M);
+      }
+      if(L >= R){
+        for (
+          let i = index,
+            tmp = arr[i],
+            con = M + 1 * (arr[index] > arr[M]);
+          i !== con;
+          arr[i] = arr[--i], arr[i] = tmp
+        );
+        return
+      }
+      if (arr[index] === arr[M]) {
+        for (
+          let i = index, tmp = arr[i];
+          i !== M + 1;
+          arr[i] = arr[--i], arr[i] = tmp
+        );
+        return;
+      }
+      return arr[index] > arr[M]
+          ? await binarySearchAndInsert(index, M + 1, R)
+          : await binarySearchAndInsert(index, L, M - 1);
+    }
+    for(let i = 1; i < arr.length; i++){
+      let st = await binarySearchAndInsert(i, 0, i - 1);
+      if(st === -1){
+        visual.showData(undefined, arr);
+        return arr;
+      }
+    }
+    visual.finishSort(arr);
+    return arr;
+  },
+});
+//#endregion
+
 export { sortContainer };
