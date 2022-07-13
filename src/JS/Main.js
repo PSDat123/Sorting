@@ -811,16 +811,21 @@ shuffle_btn.addEventListener("click", () => {
 //#endregion
 
 //#region Setup
-let ua = navigator.userAgent;
-let isIphone = ua.indexOf("iPhone") !== -1 || ua.indexOf("iPod") !== -1;
-let isIpad = ua.indexOf("iPad") !== -1;
-let isAndroid = ua.indexOf("Android") !== -1;
-let isMobile = isIphone || isIpad || isAndroid;
+// Worked before now broken
+//
+// function getWidth(){
+//   let ua = navigator.userAgent;
+//   let isIphone = ua.indexOf("iPhone") !== -1 || ua.indexOf("iPod") !== -1;
+//   let isIpad = ua.indexOf("iPad") !== -1;
+//   let isAndroid = ua.indexOf("Android") !== -1;
+//   let isMobile = isIphone || isIpad || isAndroid;
+//   let default_width = isMobile ? window.innerWidth : window.outerWidth;
+//   if (isIphone) default_width = screen.width;
+//   return default_width;
+// }
 
-let default_width = isMobile ? window.innerWidth : window.outerWidth;
-if (isIphone) default_width = screen.width;
 function setup(anim = 1) {
-  main_canvas.width = default_width;
+  main_canvas.width = window.innerWidth;
   main_canvas.height = window.innerHeight - nav_bar.clientHeight;
   main_canvas.height -= 5;
   visual.c_height = main_canvas.height;

@@ -1,4 +1,5 @@
 "use strict";
+import MaxHeap from "./Heap"
 let sortContainer = new Map();
 
 //#region Bubble Sort
@@ -718,7 +719,7 @@ sortContainer.set("Gnome Sort".toLowerCase(), {
 });
 //#endregion
 
-//#region Binary Insertion sort
+//#region Binary Insertion Sort
 sortContainer.set("Binary Insertion Sort".toLowerCase(), {
   family: "Insertion Sort",
   name: "Binary Insertion Sort",
@@ -760,6 +761,58 @@ sortContainer.set("Binary Insertion Sort".toLowerCase(), {
     for(let i = 1; i < arr.length; i++){
       let st = await binarySearchAndInsert(i, 0, i - 1);
       if(st === -1){
+        visual.showData(undefined, arr);
+        return arr;
+      }
+    }
+    visual.finishSort(arr);
+    return arr;
+  },
+});
+//#endregion
+
+//#region Heap Sort
+sortContainer.set("Heap Sort".toLowerCase(), {
+  family: "Heap Sort",
+  name: "Heap Sort",
+  sort: async (visual, arr) => {
+    visual.status = 1;
+
+    let heap = new MaxHeap(arr);
+    let n = arr.length
+
+    let heapify = async (n, index) => {
+      let largest_i = index;
+      let l = heap.leftChildIndexOf(largest_i);
+      let r = heap.rightChildIndexOf(largest_i);
+
+      if (l < n && heap.items[l] > heap.items[largest_i]) largest_i = l;
+      if (r < n && heap.items[r] > heap.items[largest_i]) largest_i = r;
+      if (largest_i !== index) {
+        heap.swap(largest_i, index);
+        if (!visual.status) {
+          return -1;
+        }
+        if (await visual.sleep()) {
+          visual.showData(undefined, arr);
+          visual.highLightedLine(undefined, largest_i);
+          visual.highLightedLine(undefined, index);
+        }
+        return await heapify(n, largest_i);
+      }
+    };
+    for (let i = heap.parentIndexOf(n); i >= 0; i--){
+      let st = await heapify(n, i);
+      if(st === -1){
+        visual.showData(undefined, arr);
+        return arr;
+      }
+    }
+
+    for (let i = n - 1; i >= 0; --i) {
+      heap.swap(i, 0);
+      let st = await heapify(i, 0);
+      if (st === -1) {
         visual.showData(undefined, arr);
         return arr;
       }
